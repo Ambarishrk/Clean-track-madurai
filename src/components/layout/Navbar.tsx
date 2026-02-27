@@ -1,10 +1,8 @@
-
 'use client';
 
 import Link from 'next/link';
-import { useAuthStore } from '@/lib/store/useAuthStore';
+import { useUser, useAuth } from '@/firebase';
 import { signOut } from 'firebase/auth';
-import { auth } from '@/config/firebase';
 import { Button } from '@/components/ui/button';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { 
@@ -13,63 +11,91 @@ import {
   DropdownMenuItem, 
   DropdownMenuTrigger 
 } from '@/components/ui/dropdown-menu';
-import { LogOut, User, Home, PlusSquare, Sparkles } from 'lucide-react';
+import { LogOut, User, Home, ShieldCheck, CheckSquare, Bell, BarChart3 } from 'lucide-react';
 
 export default function Navbar() {
-  const user = useAuthStore((state) => state.user);
+  const { user } = useUser();
+  const auth = useAuth();
 
   const handleLogout = async () => {
     await signOut(auth);
   };
 
   return (
-    <nav className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+    <nav className="sticky top-0 z-50 w-full border-b bg-white/95 backdrop-blur supports-[backdrop-filter]:bg-white/60">
       <div className="container mx-auto flex h-16 items-center justify-between px-4">
         <Link href="/" className="flex items-center gap-2">
-          <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-primary text-primary-foreground shadow-lg">
-            <Sparkles className="h-6 w-6" />
+          <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-primary text-primary-foreground shadow-lg shadow-primary/20">
+            <ShieldCheck className="h-6 w-6" />
           </div>
-          <span className="text-xl font-bold tracking-tight text-primary">SyncSphere</span>
+          <div>
+            <span className="text-xl font-black tracking-tighter text-primary uppercase">Clean-Track</span>
+            <p className="text-[8px] font-bold text-muted-foreground tracking-[0.2em] uppercase leading-none">Madurai Governance</p>
+          </div>
         </Link>
 
-        <div className="flex items-center gap-4">
+        <div className="flex items-center gap-1 md:gap-4">
           {user ? (
             <>
-              <Link href="/" className="hidden md:block">
-                <Button variant="ghost" size="sm" className="gap-2">
-                  <Home className="h-4 w-4" />
-                  Feed
-                </Button>
-              </Link>
+              <div className="hidden lg:flex items-center gap-1 mr-4">
+                <Link href="/">
+                  <Button variant="ghost" size="sm" className="gap-2 font-bold text-xs">
+                    <Home className="h-4 w-4" />
+                    Dash
+                  </Button>
+                </Link>
+                <Link href="/tasks">
+                  <Button variant="ghost" size="sm" className="gap-2 font-bold text-xs">
+                    <CheckSquare className="h-4 w-4" />
+                    Tasks
+                  </Button>
+                </Link>
+                <Link href="/gfc-tracker">
+                  <Button variant="ghost" size="sm" className="gap-2 font-bold text-xs">
+                    <BarChart3 className="h-4 w-4" />
+                    GFC
+                  </Button>
+                </Link>
+              </div>
+
+              <Button variant="ghost" size="icon" className="relative h-9 w-9">
+                <Bell className="h-5 w-5" />
+                <span className="absolute top-2 right-2 h-2 w-2 bg-red-500 rounded-full border-2 border-white" />
+              </Button>
+
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
-                  <Button variant="ghost" className="relative h-10 w-10 rounded-full">
+                  <Button variant="ghost" className="relative h-10 w-10 rounded-full p-0">
                     <Avatar className="h-10 w-10 border-2 border-primary/10">
                       <AvatarImage src={user.photoURL || ''} alt={user.displayName || 'User'} />
-                      <AvatarFallback className="bg-primary/5 text-primary">
+                      <AvatarFallback className="bg-primary/5 text-primary font-bold">
                         {user.displayName?.charAt(0) || user.email?.charAt(0)}
                       </AvatarFallback>
                     </Avatar>
                   </Button>
                 </DropdownMenuTrigger>
-                <DropdownMenuContent align="end" className="w-56">
+                <DropdownMenuContent align="end" className="w-56 mt-2">
+                  <div className="p-2 border-b mb-1">
+                    <p className="text-sm font-bold truncate">{user.displayName || 'Officer'}</p>
+                    <p className="text-[10px] text-muted-foreground truncate">{user.email}</p>
+                  </div>
                   <Link href="/profile">
-                    <DropdownMenuItem className="cursor-pointer gap-2">
+                    <DropdownMenuItem className="cursor-pointer gap-2 font-medium">
                       <User className="h-4 w-4" />
-                      Profile
+                      My Profile
                     </DropdownMenuItem>
                   </Link>
-                  <DropdownMenuItem className="cursor-pointer gap-2 text-destructive" onClick={handleLogout}>
+                  <DropdownMenuItem className="cursor-pointer gap-2 text-destructive font-medium" onClick={handleLogout}>
                     <LogOut className="h-4 w-4" />
-                    Logout
+                    Logout System
                   </DropdownMenuItem>
                 </DropdownMenuContent>
               </DropdownMenu>
             </>
           ) : (
             <Link href="/login">
-              <Button className="bg-primary hover:bg-primary/90 text-primary-foreground font-semibold rounded-lg shadow-md transition-all">
-                Sign In
+              <Button className="font-bold rounded-lg px-6 shadow-lg shadow-primary/20">
+                Staff Login
               </Button>
             </Link>
           )}
