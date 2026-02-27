@@ -21,7 +21,7 @@ export interface Ward {
   assignedOfficerId: string;
   population: number;
   householdCount: number;
-  boundaryCoordinates?: string;
+  boundaryCoordinates?: any; // GeoJSON
   createdAt: number;
 }
 
@@ -103,13 +103,15 @@ export interface PredictiveAlert {
   createdAt: number;
 }
 
-export interface Notification {
+export interface Escalation {
   id: string;
-  userId: string;
-  type: string;
-  title: string;
-  message: string;
-  link?: string;
-  read: boolean;
-  createdAt: number;
+  wardId: string;
+  issue: string;
+  raisedBy: string;
+  raisedAt: number;
+  currentLevel: 1 | 2 | 3;
+  currentAssignee: string;
+  slaDeadline: number;
+  status: 'active' | 'resolved' | 'expired';
+  notes: string;
 }

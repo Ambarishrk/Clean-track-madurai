@@ -11,7 +11,7 @@
     --card-foreground: 222 47% 11%;
     --popover: 0 0% 100%;
     --popover-foreground: 222 47% 11%;
-    --primary: 215 73% 37%; /* Brand Blue #1A56A4 */
+    --primary: 215 73% 37%; /* Madurai Brand Blue #1A56A4 */
     --primary-foreground: 210 40% 98%;
     --secondary: 210 40% 96.1%;
     --secondary-foreground: 222 47% 11%;
@@ -24,12 +24,12 @@
     --border: 214.3 31.8% 91.4%;
     --input: 214.3 31.8% 91.4%;
     --ring: 215 73% 37%;
-    --radius: 0.5rem;
+    --radius: 0.75rem;
     
-    /* Sanitation Status Colors */
-    --status-green: 142 71% 36%;  /* #16A34A */
-    --status-amber: 35 92% 44%;   /* #D97706 */
-    --status-red: 0 72% 51%;      /* #DC2626 */
+    /* SBM 2.0 RAG System */
+    --status-green: 142 71% 36%;  /* KPI >= 85% */
+    --status-amber: 35 92% 44%;   /* KPI 60-84% */
+    --status-red: 0 72% 51%;      /* KPI < 60% */
   }
 }
 
@@ -40,7 +40,23 @@
 
 .status-green { color: hsl(var(--status-green)); }
 .bg-status-green { background-color: hsl(var(--status-green)); }
+.border-status-green { border-color: hsl(var(--status-green)); }
+
 .status-amber { color: hsl(var(--status-amber)); }
 .bg-status-amber { background-color: hsl(var(--status-amber)); }
+.border-status-amber { border-color: hsl(var(--status-amber)); }
+
 .status-red { color: hsl(var(--status-red)); }
 .bg-status-red { background-color: hsl(var(--status-red)); }
+.border-status-red { border-color: hsl(var(--status-red)); }
+
+.custom-scrollbar::-webkit-scrollbar {
+  width: 4px;
+}
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: transparent;
+}
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background: hsl(var(--muted));
+  border-radius: 10px;
+}
