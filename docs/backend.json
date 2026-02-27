@@ -1,0 +1,920 @@
+{
+  "entities": {
+    "User": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "title": "User",
+      "type": "object",
+      "description": "Represents a user of the Clean-Track application, holding their profile information, role, and assigned geographical scope.",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique identifier for the User entity."
+        },
+        "name": {
+          "type": "string",
+          "description": "The full name of the user."
+        },
+        "email": {
+          "type": "string",
+          "description": "The email address of the user, used for authentication and communication.",
+          "format": "email"
+        },
+        "role": {
+          "type": "string",
+          "description": "The role of the user within the system (MUNICIPAL_COMMISSIONER, ZONAL_OFFICER, WARD_SUPERVISOR)."
+        },
+        "zoneId": {
+          "type": "string",
+          "description": "Reference to Zone if the user is a Zonal Officer or Commissioner. (Relationship: Zone 1:N User)"
+        },
+        "wardId": {
+          "type": "string",
+          "description": "Reference to Ward if the user is a Ward Supervisor. (Relationship: Ward 1:N User)"
+        },
+        "photoURL": {
+          "type": "string",
+          "description": "URL to the user's profile picture.",
+          "format": "uri"
+        },
+        "phone": {
+          "type": "string",
+          "description": "The user's contact phone number."
+        },
+        "createdAt": {
+          "type": "string",
+          "description": "Timestamp indicating when the user account was created.",
+          "format": "date-time"
+        },
+        "lastLoginAt": {
+          "type": "string",
+          "description": "Timestamp indicating the user's last login.",
+          "format": "date-time"
+        }
+      },
+      "required": [
+        "id",
+        "name",
+        "email",
+        "role",
+        "createdAt",
+        "lastLoginAt"
+      ]
+    },
+    "Ward": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "title": "Ward",
+      "type": "object",
+      "description": "Represents a specific municipal ward in Madurai City, including its demographic and administrative details.",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique identifier for the Ward entity (e.g., W001-W100)."
+        },
+        "wardName": {
+          "type": "string",
+          "description": "The official name of the ward."
+        },
+        "zoneId": {
+          "type": "string",
+          "description": "Reference to the Zone this ward belongs to. (Relationship: Zone 1:N Ward)"
+        },
+        "assignedOfficerId": {
+          "type": "string",
+          "description": "Reference to the User (Zonal Officer) primarily responsible for this ward. (Relationship: User 1:N Ward)"
+        },
+        "population": {
+          "type": "number",
+          "description": "The estimated population of the ward."
+        },
+        "householdCount": {
+          "type": "number",
+          "description": "The number of households within the ward."
+        },
+        "boundaryCoordinates": {
+          "type": "string",
+          "description": "GeoJSON string representing the geographical boundary of the ward."
+        },
+        "createdAt": {
+          "type": "string",
+          "description": "Timestamp indicating when the ward record was created.",
+          "format": "date-time"
+        }
+      },
+      "required": [
+        "id",
+        "wardName",
+        "zoneId",
+        "assignedOfficerId",
+        "population",
+        "householdCount",
+        "boundaryCoordinates",
+        "createdAt"
+      ]
+    },
+    "Zone": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "title": "Zone",
+      "type": "object",
+      "description": "Represents a municipal zone, a larger administrative division comprising multiple wards.",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique identifier for the Zone entity (e.g., Z1-Z4)."
+        },
+        "zoneName": {
+          "type": "string",
+          "description": "The official name of the zone."
+        },
+        "assignedOfficerId": {
+          "type": "string",
+          "description": "Reference to the User (Zonal Officer) assigned to manage this zone. (Relationship: User 1:N Zone)"
+        },
+        "wardIds": {
+          "type": "array",
+          "description": "An array of Ward IDs belonging to this zone. (Relationship: Zone 1:N Ward, implicitly handled by this array on the 'one' side).",
+          "items": {
+            "type": "string"
+          }
+        }
+      },
+      "required": [
+        "id",
+        "zoneName",
+        "assignedOfficerId",
+        "wardIds"
+      ]
+    },
+    "KpiSnapshot": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "title": "KpiSnapshot",
+      "type": "object",
+      "description": "Records daily Key Performance Indicator (KPI) data for a specific ward, crucial for tracking sanitation progress.",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique identifier for the KpiSnapshot entity."
+        },
+        "wardId": {
+          "type": "string",
+          "description": "Reference to the Ward for which this KPI snapshot was recorded. (Relationship: Ward 1:N KpiSnapshot)"
+        },
+        "date": {
+          "type": "string",
+          "description": "The date for which the KPI data is recorded (YYYY-MM-DD).",
+          "format": "date"
+        },
+        "segregationRate": {
+          "type": "number",
+          "description": "Percentage of households segregating waste (0-100)."
+        },
+        "d2dCoverageRate": {
+          "type": "number",
+          "description": "Percentage of households receiving door-to-door waste collection (0-100)."
+        },
+        "toiletHygieneScore": {
+          "type": "number",
+          "description": "Weighted hygiene score for toilet facilities in the ward (0-100)."
+        },
+        "wasteProcessingRate": {
+          "type": "number",
+          "description": "Percentage of collected waste sent for processing (0-100)."
+        },
+        "status": {
+          "type": "string",
+          "description": "Overall status based on KPIs ('green', 'amber', 'red')."
+        },
+        "dataSource": {
+          "type": "string",
+          "description": "The source or method by which this KPI data was collected."
+        },
+        "recordedBy": {
+          "type": "string",
+          "description": "Reference to the User (Ward Supervisor) who recorded this snapshot. (Relationship: User 1:N KpiSnapshot)"
+        },
+        "createdAt": {
+          "type": "string",
+          "description": "Timestamp indicating when the KPI snapshot record was created.",
+          "format": "date-time"
+        }
+      },
+      "required": [
+        "id",
+        "wardId",
+        "date",
+        "segregationRate",
+        "d2dCoverageRate",
+        "toiletHygieneScore",
+        "wasteProcessingRate",
+        "status",
+        "dataSource",
+        "recordedBy",
+        "createdAt"
+      ]
+    },
+    "CollectionTrip": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "title": "CollectionTrip",
+      "type": "object",
+      "description": "Details of a single waste collection trip, including vehicle, route, and collected tonnage.",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique identifier for the CollectionTrip entity."
+        },
+        "vehicleId": {
+          "type": "string",
+          "description": "Identifier for the vehicle used for the trip."
+        },
+        "wardId": {
+          "type": "string",
+          "description": "Reference to the Ward where the collection trip took place. (Relationship: Ward 1:N CollectionTrip)"
+        },
+        "driverId": {
+          "type": "string",
+          "description": "Reference to the User (driver) who conducted the trip. (Relationship: User 1:N CollectionTrip)"
+        },
+        "startTime": {
+          "type": "string",
+          "description": "Timestamp when the collection trip started.",
+          "format": "date-time"
+        },
+        "endTime": {
+          "type": "string",
+          "description": "Timestamp when the collection trip ended.",
+          "format": "date-time"
+        },
+        "tonnajeKg": {
+          "type": "number",
+          "description": "Total weight of waste collected in kilograms."
+        },
+        "coveragePercent": {
+          "type": "number",
+          "description": "Estimated percentage of the assigned area covered during the trip."
+        },
+        "routeGeoJSON": {
+          "type": "string",
+          "description": "GeoJSON string representing the actual route taken during the collection trip."
+        },
+        "tripStatus": {
+          "type": "string",
+          "description": "The current status of the collection trip (e.g., 'completed', 'in_progress', 'delayed')."
+        },
+        "createdAt": {
+          "type": "string",
+          "description": "Timestamp indicating when the collection trip record was created.",
+          "format": "date-time"
+        }
+      },
+      "required": [
+        "id",
+        "vehicleId",
+        "wardId",
+        "driverId",
+        "startTime",
+        "endTime",
+        "tonnajeKg",
+        "coveragePercent",
+        "routeGeoJSON",
+        "tripStatus",
+        "createdAt"
+      ]
+    },
+    "ToiletFacility": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "title": "ToiletFacility",
+      "type": "object",
+      "description": "Information about a public or community toilet facility, including its location and hygiene status.",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique identifier for the ToiletFacility entity."
+        },
+        "wardId": {
+          "type": "string",
+          "description": "Reference to the Ward where this toilet facility is located. (Relationship: Ward 1:N ToiletFacility)"
+        },
+        "facilityType": {
+          "type": "string",
+          "description": "The type of the toilet facility ('public', 'community', 'school')."
+        },
+        "location": {
+          "type": "array",
+          "description": "Geographical coordinates [latitude, longitude] of the facility.",
+          "items": {
+            "type": "number"
+          }
+        },
+        "lastCleanedAt": {
+          "type": "string",
+          "description": "Timestamp of the last recorded cleaning of the facility.",
+          "format": "date-time"
+        },
+        "hygieneScore": {
+          "type": "number",
+          "description": "Current hygiene score of the facility (0-100)."
+        },
+        "functionalStatus": {
+          "type": "string",
+          "description": "The operational status of the facility (e.g., 'fully_functional', 'partially_functional', 'non_functional')."
+        },
+        "odfStatus": {
+          "type": "string",
+          "description": "Open Defecation Free (ODF) status of the facility ('pending', 'certified')."
+        }
+      },
+      "required": [
+        "id",
+        "wardId",
+        "facilityType",
+        "location",
+        "lastCleanedAt",
+        "hygieneScore",
+        "functionalStatus",
+        "odfStatus"
+      ]
+    },
+    "Alert": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "title": "Alert",
+      "type": "object",
+      "description": "Records critical notifications or issues that require attention from officers.",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique identifier for the Alert entity."
+        },
+        "type": {
+          "type": "string",
+          "description": "The category of the alert ('kpi_breach', 'vehicle_breakdown', 'missed_route', 'hygiene_breach', 'surge_forecast', 'grievance_sla')."
+        },
+        "wardId": {
+          "type": "string",
+          "description": "Reference to the Ward associated with this alert, if applicable. (Relationship: Ward 1:N Alert)"
+        },
+        "zoneId": {
+          "type": "string",
+          "description": "Reference to the Zone associated with this alert, if applicable. (Relationship: Zone 1:N Alert)"
+        },
+        "severity": {
+          "type": "string",
+          "description": "The severity level of the alert ('critical', 'high', 'medium')."
+        },
+        "title": {
+          "type": "string",
+          "description": "A brief, descriptive title for the alert."
+        },
+        "description": {
+          "type": "string",
+          "description": "Detailed description of the alert or issue."
+        },
+        "isResolved": {
+          "type": "boolean",
+          "description": "Indicates whether the alert has been resolved."
+        },
+        "assignedTo": {
+          "type": "string",
+          "description": "Reference to the User assigned to resolve this alert. (Relationship: User 1:N Alert)"
+        },
+        "createdAt": {
+          "type": "string",
+          "description": "Timestamp when the alert was created.",
+          "format": "date-time"
+        },
+        "resolvedAt": {
+          "type": "string",
+          "description": "Timestamp when the alert was marked as resolved.",
+          "format": "date-time"
+        }
+      },
+      "required": [
+        "id",
+        "type",
+        "severity",
+        "title",
+        "description",
+        "isResolved",
+        "createdAt"
+      ]
+    },
+    "Task": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "title": "Task",
+      "type": "object",
+      "description": "Represents a corrective action or maintenance task assigned to an officer.",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique identifier for the Task entity."
+        },
+        "wardId": {
+          "type": "string",
+          "description": "Reference to the Ward where this task is relevant. (Relationship: Ward 1:N Task)"
+        },
+        "zoneId": {
+          "type": "string",
+          "description": "Reference to the Zone where this task is relevant. (Relationship: Zone 1:N Task)"
+        },
+        "title": {
+          "type": "string",
+          "description": "A concise title for the task."
+        },
+        "description": {
+          "type": "string",
+          "description": "Detailed description of the task requirements."
+        },
+        "assignedTo": {
+          "type": "string",
+          "description": "Reference to the User responsible for completing the task. (Relationship: User 1:N Task)"
+        },
+        "createdBy": {
+          "type": "string",
+          "description": "Reference to the User who created or assigned the task. (Relationship: User 1:N Task)"
+        },
+        "status": {
+          "type": "string",
+          "description": "The current status of the task ('open', 'in_progress', 'completed')."
+        },
+        "dueDate": {
+          "type": "string",
+          "description": "The deadline for completing the task.",
+          "format": "date-time"
+        },
+        "priority": {
+          "type": "string",
+          "description": "The priority level of the task ('high', 'medium', 'low')."
+        },
+        "photoEvidenceURL": {
+          "type": "string",
+          "description": "URL to photo evidence submitted upon task completion.",
+          "format": "uri"
+        },
+        "createdAt": {
+          "type": "string",
+          "description": "Timestamp when the task was created.",
+          "format": "date-time"
+        },
+        "updatedAt": {
+          "type": "string",
+          "description": "Timestamp of the last update to the task record.",
+          "format": "date-time"
+        }
+      },
+      "required": [
+        "id",
+        "title",
+        "description",
+        "assignedTo",
+        "createdBy",
+        "status",
+        "dueDate",
+        "priority",
+        "createdAt",
+        "updatedAt"
+      ]
+    },
+    "Escalation": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "title": "Escalation",
+      "type": "object",
+      "description": "Records an issue that has been escalated from a lower administrative level to a higher one.",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique identifier for the Escalation entity."
+        },
+        "wardId": {
+          "type": "string",
+          "description": "Reference to the Ward where the escalated issue originated. (Relationship: Ward 1:N Escalation)"
+        },
+        "issue": {
+          "type": "string",
+          "description": "Description of the escalated issue."
+        },
+        "raisedBy": {
+          "type": "string",
+          "description": "Reference to the User who initiated the escalation. (Relationship: User 1:N Escalation)"
+        },
+        "raisedAt": {
+          "type": "string",
+          "description": "Timestamp when the escalation was initiated.",
+          "format": "date-time"
+        },
+        "currentLevel": {
+          "type": "number",
+          "description": "The current level of escalation (1: Ward, 2: Zone, 3: Commissioner)."
+        },
+        "currentAssignee": {
+          "type": "string",
+          "description": "Reference to the User currently responsible for handling the escalation. (Relationship: User 1:N Escalation)"
+        },
+        "slaDeadline": {
+          "type": "string",
+          "description": "Service Level Agreement (SLA) deadline for resolving the escalation.",
+          "format": "date-time"
+        },
+        "status": {
+          "type": "string",
+          "description": "The current status of the escalation (e.g., 'open', 'acknowledged', 'resolved')."
+        },
+        "notes": {
+          "type": "string",
+          "description": "Additional notes or comments regarding the escalation."
+        }
+      },
+      "required": [
+        "id",
+        "wardId",
+        "issue",
+        "raisedBy",
+        "raisedAt",
+        "currentLevel",
+        "currentAssignee",
+        "slaDeadline",
+        "status"
+      ]
+    },
+    "GfcIndicator": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "title": "GfcIndicator",
+      "type": "object",
+      "description": "Details for each indicator required for the 'Garbage Free City' (GFC) certification as prescribed by MoHUA.",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique identifier for the GfcIndicator entity."
+        },
+        "indicatorName": {
+          "type": "string",
+          "description": "The name of the GFC indicator."
+        },
+        "category": {
+          "type": "string",
+          "description": "The category of the indicator as defined by MoHUA."
+        },
+        "weight": {
+          "type": "number",
+          "description": "The weighting of this indicator in the overall GFC composite score."
+        },
+        "currentValue": {
+          "type": "number",
+          "description": "The current assessed value or score for this indicator."
+        },
+        "targetValue": {
+          "type": "number",
+          "description": "The target value or score required for this indicator to pass."
+        },
+        "status": {
+          "type": "string",
+          "description": "The current status of the indicator ('pass', 'fail', 'in_progress')."
+        },
+        "evidenceURLs": {
+          "type": "array",
+          "description": "An array of URLs pointing to evidence documents or images supporting the indicator's status.",
+          "items": {
+            "type": "string"
+          }
+        },
+        "lastAssessed": {
+          "type": "string",
+          "description": "Timestamp of the last assessment for this indicator.",
+          "format": "date-time"
+        }
+      },
+      "required": [
+        "id",
+        "indicatorName",
+        "category",
+        "weight",
+        "currentValue",
+        "targetValue",
+        "status",
+        "evidenceURLs",
+        "lastAssessed"
+      ]
+    },
+    "PredictiveAlert": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "title": "PredictiveAlert",
+      "type": "object",
+      "description": "Alerts generated by predictive analytics, forecasting potential sanitation challenges based on events or patterns.",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique identifier for the PredictiveAlert entity."
+        },
+        "wardId": {
+          "type": "string",
+          "description": "Reference to the Ward affected by this predictive alert. (Relationship: Ward 1:N PredictiveAlert)"
+        },
+        "alertType": {
+          "type": "string",
+          "description": "The category of the predictive alert ('festival_surge', 'monsoon_risk', 'tourist_peak')."
+        },
+        "predictedTonnageIncrease": {
+          "type": "number",
+          "description": "The predicted percentage increase in waste tonnage due to the event."
+        },
+        "confidencePercent": {
+          "type": "number",
+          "description": "The confidence level of the prediction in percentage."
+        },
+        "eventName": {
+          "type": "string",
+          "description": "The name of the event causing the surge (e.g., 'Chithirai Festival')."
+        },
+        "windowStart": {
+          "type": "string",
+          "description": "The start timestamp of the predicted event window.",
+          "format": "date-time"
+        },
+        "windowEnd": {
+          "type": "string",
+          "description": "The end timestamp of the predicted event window.",
+          "format": "date-time"
+        },
+        "recommendedAction": {
+          "type": "string",
+          "description": "Recommended actions for officers to mitigate the predicted impact."
+        },
+        "isAcknowledged": {
+          "type": "boolean",
+          "description": "Indicates whether the predictive alert has been acknowledged by an officer."
+        },
+        "createdAt": {
+          "type": "string",
+          "description": "Timestamp when the predictive alert was generated.",
+          "format": "date-time"
+        }
+      },
+      "required": [
+        "id",
+        "alertType",
+        "predictedTonnageIncrease",
+        "confidencePercent",
+        "windowStart",
+        "windowEnd",
+        "recommendedAction",
+        "isAcknowledged",
+        "createdAt"
+      ]
+    },
+    "Notification": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "title": "Notification",
+      "type": "object",
+      "description": "Individual notifications sent to users within the application, based on system events or alerts.",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique identifier for the Notification entity."
+        },
+        "userId": {
+          "type": "string",
+          "description": "Reference to the User who should receive this notification. (Relationship: User 1:N Notification)"
+        },
+        "type": {
+          "type": "string",
+          "description": "The type or category of the notification (e.g., 'alert', 'task_assigned', 'report_generated')."
+        },
+        "title": {
+          "type": "string",
+          "description": "A brief title for the notification."
+        },
+        "message": {
+          "type": "string",
+          "description": "The full message content of the notification."
+        },
+        "link": {
+          "type": "string",
+          "description": "An optional URL that the notification links to for more details.",
+          "format": "uri"
+        },
+        "read": {
+          "type": "boolean",
+          "description": "Indicates whether the user has read the notification."
+        },
+        "createdAt": {
+          "type": "string",
+          "description": "Timestamp when the notification was created.",
+          "format": "date-time"
+        }
+      },
+      "required": [
+        "id",
+        "userId",
+        "type",
+        "title",
+        "message",
+        "read",
+        "createdAt"
+      ]
+    }
+  },
+  "auth": {
+    "providers": [
+      "password",
+      "anonymous"
+    ]
+  },
+  "firestore": {
+    "structure": [
+      {
+        "path": "/users/{userId}",
+        "definition": {
+          "entityName": "User",
+          "schema": {
+            "$ref": "#/backend/entities/User"
+          },
+          "description": "User profiles containing authentication details, roles, and assigned geographical scopes (zoneId, wardId). The 'id' field in the User schema corresponds to the '{userId}' path parameter. This collection serves as the primary source for a user's authorization context.",
+          "params": [
+            {
+              "name": "userId",
+              "description": "The unique identifier of the user, typically matching Firebase Authentication UID."
+            }
+          ]
+        }
+      },
+      {
+        "path": "/wards/{wardId}",
+        "definition": {
+          "entityName": "Ward",
+          "schema": {
+            "$ref": "#/backend/entities/Ward"
+          },
+          "description": "Core municipal ward data. Includes 'zoneId' which is critical for denormalizing into related documents to achieve authorization independence. The 'id' field in the Ward schema corresponds to the '{wardId}' path parameter.",
+          "params": [
+            {
+              "name": "wardId",
+              "description": "The unique identifier for a municipal ward (e.g., W001-W100)."
+            }
+          ]
+        }
+      },
+      {
+        "path": "/zones/{zoneId}",
+        "definition": {
+          "entityName": "Zone",
+          "schema": {
+            "$ref": "#/backend/entities/Zone"
+          },
+          "description": "Core municipal zone data. Includes 'assignedOfficerId' and 'wardIds'. The 'id' field in the Zone schema corresponds to the '{zoneId}' path parameter.",
+          "params": [
+            {
+              "name": "zoneId",
+              "description": "The unique identifier for a municipal zone (e.g., Z1-Z4)."
+            }
+          ]
+        }
+      },
+      {
+        "path": "/kpi_snapshots/{kpiSnapshotId}",
+        "definition": {
+          "entityName": "KpiSnapshot",
+          "schema": {
+            "$ref": "#/backend/entities/KpiSnapshot"
+          },
+          "description": "Daily Key Performance Indicator (KPI) data for a specific ward. Includes denormalized 'wardId' and 'zoneId' to enable efficient scope-based authorization and queries for Ward Supervisors and Zonal Officers. The 'id' field in the KpiSnapshot schema corresponds to the '{kpiSnapshotId}' path parameter.",
+          "params": [
+            {
+              "name": "kpiSnapshotId",
+              "description": "The unique identifier for a KPI snapshot record."
+            }
+          ]
+        }
+      },
+      {
+        "path": "/collection_trips/{collectionTripId}",
+        "definition": {
+          "entityName": "CollectionTrip",
+          "schema": {
+            "$ref": "#/backend/entities/CollectionTrip"
+          },
+          "description": "Records details of waste collection trips. Includes denormalized 'wardId' and 'zoneId' for efficient scope-based authorization and queries. The 'id' field in the CollectionTrip schema corresponds to the '{collectionTripId}' path parameter.",
+          "params": [
+            {
+              "name": "collectionTripId",
+              "description": "The unique identifier for a waste collection trip."
+            }
+          ]
+        }
+      },
+      {
+        "path": "/toilet_facilities/{toiletFacilityId}",
+        "definition": {
+          "entityName": "ToiletFacility",
+          "schema": {
+            "$ref": "#/backend/entities/ToiletFacility"
+          },
+          "description": "Information about public or community toilet facilities. Includes denormalized 'wardId' and 'zoneId' for efficient scope-based authorization and queries. The 'id' field in the ToiletFacility schema corresponds to the '{toiletFacilityId}' path parameter.",
+          "params": [
+            {
+              "name": "toiletFacilityId",
+              "description": "The unique identifier for a toilet facility."
+            }
+          ]
+        }
+      },
+      {
+        "path": "/alerts/{alertId}",
+        "definition": {
+          "entityName": "Alert",
+          "schema": {
+            "$ref": "#/backend/entities/Alert"
+          },
+          "description": "Records critical notifications or issues. Includes 'wardId' and 'zoneId' (already present in schema) for scope-based authorization and queries, and 'assignedTo' for individual officer access. The 'id' field in the Alert schema corresponds to the '{alertId}' path parameter.",
+          "params": [
+            {
+              "name": "alertId",
+              "description": "The unique identifier for an alert."
+            }
+          ]
+        }
+      },
+      {
+        "path": "/tasks/{taskId}",
+        "definition": {
+          "entityName": "Task",
+          "schema": {
+            "$ref": "#/backend/entities/Task"
+          },
+          "description": "Represents corrective action or maintenance tasks. Includes 'wardId', 'zoneId', 'assignedTo', and 'createdBy' (already present in schema) for comprehensive scope-based and ownership-based authorization. The 'id' field in the Task schema corresponds to the '{taskId}' path parameter.",
+          "params": [
+            {
+              "name": "taskId",
+              "description": "The unique identifier for a task."
+            }
+          ]
+        }
+      },
+      {
+        "path": "/escalations/{escalationId}",
+        "definition": {
+          "entityName": "Escalation",
+          "schema": {
+            "$ref": "#/backend/entities/Escalation"
+          },
+          "description": "Records issues escalated to higher administrative levels. Includes denormalized 'wardId' and 'zoneId' for scope-based authorization and queries, and 'currentAssignee' and 'raisedBy' for ownership. The 'id' field in the Escalation schema corresponds to the '{escalationId}' path parameter.",
+          "params": [
+            {
+              "name": "escalationId",
+              "description": "The unique identifier for an escalation."
+            }
+          ]
+        }
+      },
+      {
+        "path": "/gfc_indicators/{gfcIndicatorId}",
+        "definition": {
+          "entityName": "GfcIndicator",
+          "schema": {
+            "$ref": "#/backend/entities/GfcIndicator"
+          },
+          "description": "Details for each indicator required for the 'Garbage Free City' (GFC) certification. This is a global collection primarily accessed by the Municipal Commissioner. The 'id' field in the GfcIndicator schema corresponds to the '{gfcIndicatorId}' path parameter.",
+          "params": [
+            {
+              "name": "gfcIndicatorId",
+              "description": "The unique identifier for a GFC indicator."
+            }
+          ]
+        }
+      },
+      {
+        "path": "/predictive_alerts/{predictiveAlertId}",
+        "definition": {
+          "entityName": "PredictiveAlert",
+          "schema": {
+            "$ref": "#/backend/entities/PredictiveAlert"
+          },
+          "description": "Alerts generated by predictive analytics forecasting potential sanitation challenges. Includes denormalized 'wardId' and 'zoneId' for efficient scope-based authorization and queries. The 'id' field in the PredictiveAlert schema corresponds to the '{predictiveAlertId}' path parameter.",
+          "params": [
+            {
+              "name": "predictiveAlertId",
+              "description": "The unique identifier for a predictive alert."
+            }
+          ]
+        }
+      },
+      {
+        "path": "/users/{userId}/notifications/{notificationId}",
+        "definition": {
+          "entityName": "Notification",
+          "schema": {
+            "$ref": "#/backend/entities/Notification"
+          },
+          "description": "Private notifications for individual users. The 'userId' in the path ensures strict user-specific access, limiting notifications to the authenticated user. The 'id' field in the Notification schema corresponds to the '{notificationId}' path parameter.",
+          "params": [
+            {
+              "name": "userId",
+              "description": "The unique identifier of the user who owns this notification, matching Firebase Authentication UID."
+            },
+            {
+              "name": "notificationId",
+              "description": "The unique identifier for a specific notification."
+            }
+          ]
+        }
+      }
+    ],
+    "reasoning": "The Firestore structure for \"Clean-Track\" is meticulously designed to meet the requirements of secure, scalable, and debuggable Firestore rules, prioritizing Authorization Independence and Query-Accurate Permissions (QAPs). The design adheres to the core principles by employing strategic denormalization and structural segregation.\n\n**Authorization Independence (CRITICAL) via Denormalization:**\nTo avoid hierarchical authorization dependencies (i.e., `get()` calls in rules to parent documents), key authorization contexts are denormalized:\n1.  **User Profiles (`/users/{userId}`):** Each user's document stores their `role`, `zoneId` (for Zonal Officers and Commissioner), and `wardId` (for Ward Supervisors). Although security rules will perform an initial `get(/users/$(request.auth.uid))` to retrieve this essential authorization context (as per the \"DBAC: No Custom Claims\" mandate), this is acceptable. This `get()` operation retrieves the *current user's own identity data* and does not introduce a hierarchical dependency on *other* documents' parent data to authorize a child document. Once the user's scope is established, it is then used for subsequent authorization checks.\n2.  **Scope Denormalization in Documents:** For all data entities that are inherently scoped to a specific ward or zone (e.g., `KpiSnapshot`, `CollectionTrip`, `ToiletFacility`, `Alert`, `Task`, `Escalation`, `PredictiveAlert`), the `wardId` and/or `zoneId` are explicitly stored within each document. Specifically:\n    *   For `KpiSnapshot`, `CollectionTrip`, `ToiletFacility`, `Escalation`, and `PredictiveAlert` documents, where the original schema only included `wardId`, the `zoneId` (denormalized from the respective `/wards/{wardId}` document) **must** be added and stored in *every* document. This is a critical step to ensure zonal officers can access data without performing `get()` operations on parent `Ward` documents.\n    *   The `Alert` and `Task` entities already include both `wardId` and `zoneId` in their schema, naturally supporting this principle.\nThis comprehensive denormalization eliminates the need for `get()` operations in security rules to check parent documents for authorization context (e.g., determining a ward's `zoneId` from `/wards/{wardId}` before granting access to its related data). This strategy ensures atomic operations, simplifies rule logic, and significantly enhances debuggability.\n\n**Query-Accurate Permissions (QAPs) through Structural Segregation:**\nThe structural design and denormalization directly enable robust QAPs, allowing for secure `list` operations without relying on security rules to filter data after retrieval. This means queries made by clients will only return data they are authorized to see, thus enforcing security at the database level:\n1.  **Commissioner:** As the `MUNICIPAL_COMMISSIONER` has city-wide access, they can query and list all documents in any collection without scope restrictions.\n2.  **Zonal Officer:** Can query and list documents scoped to their assigned `zoneId`. This is facilitated by including `zoneId` in all relevant documents, allowing rules to enforce `resource.data.zoneId == request.auth.token.zoneId` (assuming custom claims or a `get()` lookup of the user's role/scope is performed once for the current user's role).\n3.  **Ward Supervisor:** Can query and list documents strictly scoped to their assigned `wardId`. This is achieved by including `wardId` in all relevant documents, enabling rules to enforce `resource.data.wardId == request.auth.token.wardId`.\n4.  **Private Data:** The `/users/{userId}/notifications/{notificationId}` subcollection is a prime example of private data. Access is strictly limited to `request.auth.uid == userId`, making `list` operations inherently secure and efficient for personal notifications.\n\n**Structural Segregation:** All documents within a given collection are designed to share the same security requirements. For example, `GfcIndicators` are global, while `Alerts` are always scoped to a ward or zone. There are no mixed public/private documents within the same top-level collection, simplifying security rule logic.\n\n**Access Modeling:**\n*   **Private Data:** `Notifications` are private and path-based, nested under individual user documents (`/users/{userId}`).\n*   **Hierarchical Paths for User-Owned Data:** While many core entities like `KpiSnapshot`, `Alert`, and `Task` are top-level collections for query flexibility, their ownership or scope is clearly defined by `wardId`, `zoneId`, `assignedTo`, or `recordedBy` fields within the document, which are then linked to the authenticated user's retrieved role and scope.\n*   **Global Roles (DBAC):** Roles are stored within the `/users/{userId}` collection, and authorization relies on `request.auth.uid` to look up the current user's role and scope, which is then used across the rules for all other collections.\n\nThis structure provides a clean, predictable, and scalable foundation for the Clean-Track application's security and data management needs, making rule writing straightforward and debuggable."
+  }
+}
