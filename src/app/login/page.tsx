@@ -13,7 +13,8 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { useToast } from '@/hooks/use-toast';
-import { ShieldCheck, Mail, Lock, Loader2, ArrowRight } from 'lucide-react';
+import { ShieldCheck, Mail, Lock, Loader2, ArrowRight, Info } from 'lucide-react';
+import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 
 export default function LoginPage() {
   const [email, setEmail] = useState('');
@@ -31,7 +32,10 @@ export default function LoginPage() {
       toast({ title: "Authenticated", description: "Access granted to Command Center." });
       router.push('/');
     } catch (error: any) {
-      toast({ title: "Access Denied", description: "Invalid credentials.", variant: "destructive" });
+      console.error(error);
+      let message = "Invalid credentials.";
+      if (error.code === 'auth/user-not-found') message = "User not found. Please create the user in Firebase Console.";
+      toast({ title: "Access Denied", description: message, variant: "destructive" });
     } finally {
       setIsLoading(false);
     }
@@ -45,19 +49,24 @@ export default function LoginPage() {
       toast({ title: "Success", description: "Logged in via corporate account." });
       router.push('/');
     } catch (error: any) {
-      toast({ title: "Google Auth Failed", description: error.message, variant: "destructive" });
+      console.error(error);
+      let description = error.message;
+      if (error.code === 'auth/operation-not-allowed') {
+        description = "Google Sign-In is not enabled in the Firebase Console. Go to Authentication > Sign-in method to enable it.";
+      }
+      toast({ title: "Google Auth Failed", description, variant: "destructive" });
     } finally {
       setIsLoading(false);
     }
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center p-4 bg-slate-50 relative overflow-hidden">
+    <div className="min-h-screen flex flex-col items-center justify-center p-4 bg-slate-50 relative overflow-hidden">
       <div className="absolute top-0 left-0 w-full h-full opacity-[0.03] pointer-events-none">
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-primary via-transparent to-transparent scale-150" />
       </div>
 
-      <Card className="w-full max-w-md border-none shadow-2xl overflow-hidden rounded-2xl">
+      <Card className="w-full max-w-md border-none shadow-2xl overflow-hidden rounded-2xl z-10">
         <div className="bg-primary p-12 text-center text-primary-foreground relative">
           <div className="absolute top-0 right-0 p-4 opacity-20"><ShieldCheck className="h-24 w-24" /></div>
           <h1 className="text-4xl font-black tracking-tighter mb-1 uppercase">Clean-Track</h1>
@@ -67,7 +76,7 @@ export default function LoginPage() {
           <CardTitle className="text-xl font-bold">Officer Sign-In</CardTitle>
           <CardDescription>Enterprise Access for Municipal Staff</CardDescription>
         </CardHeader>
-        <CardContent className="pb-8">
+        <CardContent className="pb-8 space-y-6">
           <form onSubmit={handleEmailAuth} className="space-y-4">
             <div className="relative">
               <Mail className="absolute left-3 top-3.5 h-4 w-4 text-muted-foreground" />
@@ -102,7 +111,7 @@ export default function LoginPage() {
             </Button>
           </form>
 
-          <div className="relative my-8">
+          <div className="relative my-4">
             <div className="absolute inset-0 flex items-center"><span className="w-full border-t" /></div>
             <div className="relative flex justify-center text-xs uppercase"><span className="bg-white px-3 text-muted-foreground font-bold">Internal SSO</span></div>
           </div>
@@ -121,6 +130,20 @@ export default function LoginPage() {
             </svg>
             Staff Account
           </Button>
+
+          <Alert className="bg-blue-50 border-blue-100">
+            <Info className="h-4 w-4 text-blue-600" />
+            <AlertTitle className="text-blue-800 text-xs font-bold uppercase">Development Note</AlertTitle>
+            <AlertDescription className="text-blue-700 text-[10px] leading-relaxed">
+              Ensure you have created these users in the Firebase Console and enabled the Google provider.
+              <ul className="mt-2 space-y-1 font-mono">
+                <li>• Commissioner: commissioner@clean-track.gov</li>
+                <li>• Zonal: zonal@clean-track.gov</li>
+                <li>• Supervisor: ward@clean-track.gov</li>
+                <li>• Password: madurai123</li>
+              </ul>
+            </AlertDescription>
+          </Alert>
         </CardContent>
       </Card>
     </div>
