@@ -1,7 +1,8 @@
+
 'use client';
 
 import Link from 'next/link';
-import { useUser, useAuth } from '@/firebase';
+import { useUser, useAuth, useDoc, useMemoFirebase, useFirestore } from '@/firebase';
 import { signOut } from 'firebase/auth';
 import { Button } from '@/components/ui/button';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
@@ -9,17 +10,30 @@ import {
   DropdownMenu, 
   DropdownMenuContent, 
   DropdownMenuItem, 
-  DropdownMenuTrigger 
+  DropdownMenuTrigger,
+  DropdownMenuSeparator
 } from '@/components/ui/dropdown-menu';
-import { LogOut, User, Home, ShieldCheck, CheckSquare, Bell, BarChart3 } from 'lucide-react';
+import { LogOut, User, Home, ShieldCheck, CheckSquare, Bell, BarChart3, Users, Map, AlertTriangle, FileText } from 'lucide-react';
+import { doc } from 'firebase/firestore';
+import { UserProfile } from '@/lib/types';
 
 export default function Navbar() {
   const { user } = useUser();
   const auth = useAuth();
+  const db = useFirestore();
+
+  const profileRef = useMemoFirebase(() => {
+    if (!db || !user?.uid) return null;
+    return doc(db, 'users', user.uid);
+  }, [db, user?.uid]);
+
+  const { data: profile } = useDoc<UserProfile>(profileRef);
 
   const handleLogout = async () => {
     await signOut(auth);
   };
+
+  const isCommissioner = profile?.role === 'MUNICIPAL_COMMISSIONER';
 
   return (
     <nav className="sticky top-0 z-50 w-full border-b bg-white/95 backdrop-blur supports-[backdrop-filter]:bg-white/60">
@@ -41,7 +55,7 @@ export default function Navbar() {
                 <Link href="/">
                   <Button variant="ghost" size="sm" className="gap-2 font-bold text-xs">
                     <Home className="h-4 w-4" />
-                    Dash
+                    Dashboard
                   </Button>
                 </Link>
                 <Link href="/tasks">
@@ -50,18 +64,36 @@ export default function Navbar() {
                     Tasks
                   </Button>
                 </Link>
+                <Link href="/alerts">
+                  <Button variant="ghost" size="sm" className="gap-2 font-bold text-xs">
+                    <AlertTriangle className="h-4 w-4" />
+                    Alerts
+                  </Button>
+                </Link>
                 <Link href="/gfc-tracker">
                   <Button variant="ghost" size="sm" className="gap-2 font-bold text-xs">
                     <BarChart3 className="h-4 w-4" />
                     GFC
                   </Button>
                 </Link>
+                {isCommissioner && (
+                  <>
+                    <Link href="/reports">
+                      <Button variant="ghost" size="sm" className="gap-2 font-bold text-xs">
+                        <FileText className="h-4 w-4" />
+                        Reports
+                      </Button>
+                    </Link>
+                  </>
+                )}
               </div>
 
-              <Button variant="ghost" size="icon" className="relative h-9 w-9">
-                <Bell className="h-5 w-5" />
-                <span className="absolute top-2 right-2 h-2 w-2 bg-red-500 rounded-full border-2 border-white" />
-              </Button>
+              <Link href="/notifications">
+                <Button variant="ghost" size="icon" className="relative h-9 w-9">
+                  <Bell className="h-5 w-5" />
+                  <span className="absolute top-2 right-2 h-2 w-2 bg-red-500 rounded-full border-2 border-white" />
+                </Button>
+              </Link>
 
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
@@ -76,8 +108,8 @@ export default function Navbar() {
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="end" className="w-56 mt-2">
                   <div className="p-2 border-b mb-1">
-                    <p className="text-sm font-bold truncate">{user.displayName || 'Officer'}</p>
-                    <p className="text-[10px] text-muted-foreground truncate">{user.email}</p>
+                    <p className="text-sm font-bold truncate">{user.displayName || profile?.name || 'Officer'}</p>
+                    <p className="text-[10px] text-muted-foreground truncate italic">{profile?.role?.replace('_', ' ')}</p>
                   </div>
                   <Link href="/profile">
                     <DropdownMenuItem className="cursor-pointer gap-2 font-medium">
@@ -85,6 +117,30 @@ export default function Navbar() {
                       My Profile
                     </DropdownMenuItem>
                   </Link>
+                  {isCommissioner && (
+                    <>
+                      <DropdownMenuSeparator />
+                      <Link href="/wards">
+                        <DropdownMenuItem className="cursor-pointer gap-2 font-medium">
+                          <Map className="h-4 w-4" />
+                          Manage Wards
+                        </DropdownMenuItem>
+                      </Link>
+                      <Link href="/users">
+                        <DropdownMenuItem className="cursor-pointer gap-2 font-medium">
+                          <Users className="h-4 w-4" />
+                          Manage Staff
+                        </DropdownMenuItem>
+                      </Link>
+                      <Link href="/escalations">
+                        <DropdownMenuItem className="cursor-pointer gap-2 font-medium">
+                          <AlertTriangle className="h-4 w-4 text-amber-500" />
+                          Escalations
+                        </DropdownMenuItem>
+                      </Link>
+                    </>
+                  )}
+                  <DropdownMenuSeparator />
                   <DropdownMenuItem className="cursor-pointer gap-2 text-destructive font-medium" onClick={handleLogout}>
                     <LogOut className="h-4 w-4" />
                     Logout System

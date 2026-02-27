@@ -2,6 +2,7 @@
 export type UserRole = 'MUNICIPAL_COMMISSIONER' | 'ZONAL_OFFICER' | 'WARD_SUPERVISOR';
 
 export interface UserProfile {
+  id: string; // Firestore doc ID
   uid: string;
   name: string;
   email: string;
@@ -18,17 +19,16 @@ export interface Ward {
   id: string; // W001-W100
   wardName: string;
   zoneId: string;
-  assignedOfficerId: string;
+  assignedOfficerId?: string;
   population: number;
   householdCount: number;
-  boundaryCoordinates?: any; // GeoJSON
   createdAt: number;
 }
 
 export interface Zone {
   id: string; // Z1-Z4
   zoneName: string;
-  assignedOfficerId: string;
+  assignedOfficerId?: string;
   wardIds: string[];
 }
 
@@ -42,7 +42,6 @@ export interface KpiSnapshot {
   toiletHygieneScore: number; // 0-100
   wasteProcessingRate: number; // 0-100
   status: 'green' | 'amber' | 'red';
-  dataSource: string;
   recordedBy: string;
   createdAt: number;
 }
@@ -89,23 +88,10 @@ export interface GfcIndicator {
   lastAssessed: number;
 }
 
-export interface PredictiveAlert {
-  id: string;
-  wardId: string;
-  alertType: 'festival_surge' | 'monsoon_risk' | 'tourist_peak';
-  predictedTonnageIncrease: number;
-  confidencePercent: number;
-  eventName: string;
-  windowStart: number;
-  windowEnd: number;
-  recommendedAction: string;
-  isAcknowledged: boolean;
-  createdAt: number;
-}
-
 export interface Escalation {
   id: string;
   wardId: string;
+  zoneId: string;
   issue: string;
   raisedBy: string;
   raisedAt: number;
@@ -114,4 +100,22 @@ export interface Escalation {
   slaDeadline: number;
   status: 'active' | 'resolved' | 'expired';
   notes: string;
+}
+
+export interface Notification {
+  id: string;
+  userId: string;
+  title: string;
+  message: string;
+  read: boolean;
+  createdAt: number;
+}
+
+export interface Report {
+  id: string;
+  type: 'daily' | 'weekly' | 'monthly';
+  title: string;
+  generatedAt: number;
+  fileUrl: string;
+  authorId: string;
 }
