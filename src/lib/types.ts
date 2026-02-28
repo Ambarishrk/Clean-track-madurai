@@ -1,4 +1,3 @@
-
 export type UserRole = 'MUNICIPAL_COMMISSIONER' | 'ZONAL_OFFICER' | 'WARD_SUPERVISOR';
 
 export interface UserProfile {
@@ -7,8 +6,8 @@ export interface UserProfile {
   name: string;
   email: string;
   role: UserRole;
-  zoneId?: string;
-  wardId?: string;
+  zoneId?: string | null;
+  wardId?: string | null;
   photoURL?: string | null;
   phone?: string;
   createdAt: number;
@@ -181,6 +180,7 @@ export interface PredictiveAlert {
 
 export interface Post {
   id: string;
+  authorId: string;
   authorName: string;
   authorAvatar?: string | null;
   createdAt: number;

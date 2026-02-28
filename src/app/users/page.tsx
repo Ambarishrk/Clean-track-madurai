@@ -1,4 +1,3 @@
-
 'use client';
 
 import { useCollection, useMemoFirebase, useFirestore } from '@/firebase';
@@ -10,9 +9,11 @@ import { Users, Shield, MapPin, MoreVertical, Plus } from 'lucide-react';
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { useRouter } from 'next/navigation';
 
 export default function UsersPage() {
   const db = useFirestore();
+  const router = useRouter();
 
   const usersQuery = useMemoFirebase(() => {
     if (!db) return null;
@@ -28,7 +29,10 @@ export default function UsersPage() {
           <h1 className="text-3xl font-black tracking-tighter uppercase italic text-primary">Municipal Staff</h1>
           <p className="text-muted-foreground font-medium">Manage corporate access and officer assignments.</p>
         </div>
-        <Button className="font-black uppercase tracking-tighter italic rounded-xl px-8 gap-2">
+        <Button 
+          className="font-black uppercase tracking-tighter italic rounded-xl px-8 gap-2"
+          onClick={() => router.push('/signup')}
+        >
           <Plus className="h-4 w-4" />
           Onboard Officer
         </Button>

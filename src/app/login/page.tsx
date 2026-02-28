@@ -1,4 +1,3 @@
-
 'use client';
 
 import { useState } from 'react';
@@ -13,7 +12,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { useToast } from '@/hooks/use-toast';
-import { ShieldCheck, Mail, Lock, Loader2, ArrowRight, Info, AlertCircle } from 'lucide-react';
+import { ShieldCheck, Mail, Lock, Loader2, ArrowRight, Info, UserPlus } from 'lucide-react';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 
 export default function LoginPage() {
@@ -77,7 +76,7 @@ export default function LoginPage() {
       <Card className="w-full max-w-md border-none shadow-2xl overflow-hidden rounded-2xl z-10">
         <div className="bg-primary p-12 text-center text-primary-foreground relative">
           <div className="absolute top-0 right-0 p-4 opacity-20"><ShieldCheck className="h-24 w-24" /></div>
-          <h1 className="text-4xl font-black tracking-tighter mb-1 uppercase">Clean-Track</h1>
+          <h1 className="text-4xl font-black tracking-tighter mb-1 uppercase italic">Clean-Track</h1>
           <p className="text-primary-foreground/70 text-xs font-bold tracking-widest uppercase">Madurai Municipal Governance</p>
         </div>
         <CardHeader className="pt-8 text-center">
@@ -121,7 +120,7 @@ export default function LoginPage() {
 
           <div className="relative my-4">
             <div className="absolute inset-0 flex items-center"><span className="w-full border-t" /></div>
-            <div className="relative flex justify-center text-xs uppercase"><span className="bg-white px-3 text-muted-foreground font-bold">Internal SSO</span></div>
+            <div className="relative flex justify-center text-xs uppercase"><span className="bg-white px-3 text-muted-foreground font-bold">Options</span></div>
           </div>
 
           <div className="space-y-2">
@@ -137,24 +136,24 @@ export default function LoginPage() {
                 <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05" />
                 <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335" />
               </svg>
-              Staff Account
+              Staff SSO
             </Button>
-            <p className="text-[10px] text-center text-muted-foreground">
-              Note: Ensure popups are allowed in your browser settings.
-            </p>
+            
+            <Button 
+              variant="ghost" 
+              className="w-full h-12 rounded-xl flex items-center justify-center gap-2 font-black uppercase text-[10px] tracking-widest text-primary hover:bg-primary/5"
+              onClick={() => router.push('/signup')}
+            >
+              <UserPlus className="h-4 w-4" />
+              New Staff Signup
+            </Button>
           </div>
 
           <Alert className="bg-blue-50 border-blue-100">
             <Info className="h-4 w-4 text-blue-600" />
             <AlertTitle className="text-blue-800 text-xs font-bold uppercase">Development Note</AlertTitle>
             <AlertDescription className="text-blue-700 text-[10px] leading-relaxed">
-              Ensure you have created these users in the Firebase Console and enabled the Google provider.
-              <ul className="mt-2 space-y-1 font-mono">
-                <li>• Commissioner: commissioner@clean-track.gov</li>
-                <li>• Zonal: zonal@clean-track.gov</li>
-                <li>• Supervisor: ward@clean-track.gov</li>
-                <li>• Password: madurai123</li>
-              </ul>
+              Use the "New Staff Signup" above to enter new officers into the system manually for testing.
             </AlertDescription>
           </Alert>
         </CardContent>

@@ -1,4 +1,3 @@
-
 import { KPI_THRESHOLDS } from '@/lib/constants'
 
 // Get RAG status from a numeric KPI value
@@ -15,10 +14,14 @@ const STATUS_COLORS: Record<string, string> = {
   red: 'text-red-600 bg-red-50 border-red-200',
 }
 
-export const getStatusColor = (status: string) => 
-  STATUS_COLORS[status as keyof typeof STATUS_COLORS] ?? 'text-gray-600 bg-gray-50 border-gray-200'
+export const getStatusColor = (status: string): string => {
+  if (status === 'green' || status === 'amber' || status === 'red') {
+    return STATUS_COLORS[status];
+  }
+  return 'text-gray-600 bg-gray-50 border-gray-200';
+}
 
-export const getStatusText = (status: string) => {
+export const getStatusText = (status: string): string => {
   switch (status) {
     case 'green':
       return 'text-green-600'
@@ -38,8 +41,12 @@ const STATUS_HEX: Record<string, string> = {
   red: '#DC2626',
 }
 
-export const getStatusHex = (status: string) => 
-  STATUS_HEX[status as keyof typeof STATUS_HEX] ?? '#6B7280'
+export const getStatusHex = (status: string): string => {
+  if (status === 'green' || status === 'amber' || status === 'red') {
+    return STATUS_HEX[status];
+  }
+  return '#6B7280';
+}
 
 // Compute overall status from 4 KPI values (worst one wins)
 export const computeOverallStatus = (

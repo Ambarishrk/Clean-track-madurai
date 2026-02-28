@@ -1,9 +1,8 @@
-
 'use client';
 
 import { useCollection, useMemoFirebase, useFirestore } from '@/firebase';
 import { collection, query, orderBy } from 'firebase/firestore';
-import { GfcIndicator } from '@/lib/types';
+import { GfcIndicator, GfcStatus } from '@/lib/types';
 import { GFCScoreRing } from '@/components/features/dashboard/GFCScoreRing';
 import { Progress } from '@/components/ui/progress';
 import { Badge } from '@/components/ui/badge';
@@ -26,7 +25,7 @@ export default function GFCTrackerPage() {
     ? Math.round(indicators.reduce((acc, curr) => acc + (curr.currentValue / curr.targetValue * curr.weight), 0))
     : 74;
 
-  const getStatusIcon = (status: GfcIndicator['status']) => {
+  const getStatusIcon = (status: GfcStatus) => {
     switch (status) {
       case 'pass': return <CheckCircle2 className="h-4 w-4 text-status-green" />;
       case 'fail': return <XCircle className="h-4 w-4 text-status-red" />;
@@ -66,7 +65,7 @@ export default function GFCTrackerPage() {
               <div className="p-4 bg-slate-50 rounded-2xl border border-slate-100">
                 <p className="text-[10px] text-center text-muted-foreground font-bold leading-relaxed">
                   Required threshold for 3-Star: 75/100.
-                  <br />Currently <span className="text-status-red font-black">1 point deficit</span>.
+                  <br />Currently <span className="text-status-red font-black">deficit identified</span>.
                 </p>
               </div>
             </div>
@@ -116,8 +115,8 @@ export default function GFCTrackerPage() {
                     </TableCell>
                     <TableCell>
                       <div className="flex items-center gap-2">
-                        {getStatusIcon(ind.status)}
-                        <span className="text-[10px] font-black uppercase tracking-widest">{ind.status}</span>
+                        {getStatusIcon(ind.status || 'in_progress')}
+                        <span className="text-[10px] font-black uppercase tracking-widest">{ind.status || 'pending'}</span>
                       </div>
                     </TableCell>
                     <TableCell className="text-right px-8">
