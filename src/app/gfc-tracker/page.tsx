@@ -115,7 +115,7 @@ export default function GFCTrackerPage() {
                     </TableCell>
                     <TableCell>
                       <div className="flex items-center gap-2">
-                        {getStatusIcon(ind.status || 'in_progress')}
+                        {getStatusIcon((ind.status || 'in_progress') as GfcStatus)}
                         <span className="text-[10px] font-black uppercase tracking-widest">{ind.status || 'pending'}</span>
                       </div>
                     </TableCell>

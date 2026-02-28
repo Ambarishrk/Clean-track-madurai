@@ -16,17 +16,19 @@ service cloud.firestore {
       return request.auth != null;
     }
 
-    // Check if the user is a Commissioner by looking at their profile
-    // Note: get() calls in rules are fine for get/write, but broad queries 
-    // are better handled by checking auth state and allowing signed-in reads.
-    function isCommissioner() {
+    // Safely check role without crashing if user doc is missing
+    function hasRole(role) {
       return isSignedIn() && 
-        get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'MUNICIPAL_COMMISSIONER';
+        get(/databases/$(database)/documents/users/$(request.auth.uid)).data.get('role', '') == role;
+    }
+
+    function isCommissioner() {
+      return hasRole('MUNICIPAL_COMMISSIONER');
     }
 
     // --- COLLECTION RULES ---
 
-    // User profiles - Any signed-in staff can see directories, but only owners/admin can edit
+    // User profiles - Readable by directory, editable by owner or Commissioner
     match /users/{userId} {
       allow read: if isSignedIn();
       allow create: if isSignedIn();
@@ -36,13 +38,13 @@ service cloud.firestore {
 
     // Notifications - Scoped to the individual user
     match /notifications/{notifId} {
-      allow read: if isSignedIn() && resource.data.userId == request.auth.uid;
+      allow read, update, delete: if isSignedIn() && resource.data.userId == request.auth.uid;
       allow create: if isSignedIn();
-      allow update: if isSignedIn() && resource.data.userId == request.auth.uid;
-      allow delete: if isSignedIn() && resource.data.userId == request.auth.uid;
     }
 
-    // Administrative Boundaries & Metadata - Readable by all staff
+    // Operational Data (KPIs, Alerts, Tasks, GFC, Metadata)
+    // Allow READ for all authenticated staff to support the "Unified Command Center"
+    
     match /wards/{wardId} {
       allow read: if isSignedIn();
       allow write: if isCommissioner();
@@ -53,9 +55,6 @@ service cloud.firestore {
       allow write: if isCommissioner();
     }
 
-    // Operational Data (KPIs, Alerts, Tasks, GFC)
-    // We allow READ for all authenticated staff to support the "Unified Command Center"
-    
     match /kpi_snapshots/{id} {
       allow read: if isSignedIn();
       allow create: if isSignedIn();
@@ -105,6 +104,12 @@ service cloud.firestore {
     match /toilet_facilities/{id} {
       allow read: if isSignedIn();
       allow write: if isSignedIn();
+    }
+
+    match /posts/{id} {
+      allow read: if isSignedIn();
+      allow create: if isSignedIn();
+      allow update, delete: if isSignedIn() && resource.data.authorId == request.auth.uid;
     }
   }
 }
