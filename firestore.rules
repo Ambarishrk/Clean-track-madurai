@@ -1,75 +1,22 @@
 rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
+    
+    // Function to check if the user is logged in
     function isSignedIn() {
       return request.auth != null;
     }
 
-    match /users/{userId} {
-      allow read: if isSignedIn();
-      allow write: if isSignedIn() && request.auth.uid == userId;
-    }
-
-    // Operational collections read access for all staff
-    match /kpi_snapshots/{id} {
-      allow read: if isSignedIn();
-      allow write: if isSignedIn();
-    }
-
-    match /alerts/{id} {
-      allow read: if isSignedIn();
-      allow write: if isSignedIn();
-    }
-
-    match /tasks/{id} {
-      allow read: if isSignedIn();
-      allow write: if isSignedIn();
-    }
-
-    match /gfc_indicators/{id} {
-      allow read: if isSignedIn();
-      allow write: if isSignedIn();
-    }
-
-    match /notifications/{id} {
-      allow read: if isSignedIn();
-      allow write: if isSignedIn();
-    }
-
-    match /wards/{id} {
-      allow read: if isSignedIn();
-      allow write: if isSignedIn();
-    }
-
-    match /zones/{id} {
-      allow read: if isSignedIn();
-      allow write: if isSignedIn();
-    }
-
-    match /summaries/{id} {
-      allow read: if isSignedIn();
-      allow write: if isSignedIn();
-    }
-
-    match /predictive_alerts/{id} {
-      allow read: if isSignedIn();
-    }
-
-    match /reports/{id} {
-      allow read: if isSignedIn();
-      allow write: if isSignedIn();
-    }
-
-    match /posts/{id} {
-      allow read: if isSignedIn();
-      allow create: if isSignedIn();
-      allow update, delete: if isSignedIn() && resource.data.authorId == request.auth.uid;
+    // This match rule applies to every document in every collection
+    match /{document=**} {
+      // Allows read, write, create, update, and delete for any logged-in user
+      allow read, write: if isSignedIn();
     }
     
+    // Specifically keeping the citizen_reports exception if you still want 
+    // unauthenticated users to be able to submit reports.
     match /citizen_reports/{id} {
       allow create: if true;
-      allow read: if isSignedIn();
-      allow update: if isSignedIn();
     }
   }
 }
