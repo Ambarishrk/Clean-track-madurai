@@ -2,23 +2,39 @@
 
 Clean-Track is a unified dashboard designed for the Madurai City Municipal Corporation to monitor sanitation metrics and achieve Swachh Bharat Mission 2.0 (SBM 2.0) "Garbage Free City" (GFC) certification.
 
-## User Roles & Access
+## User Roles & Feature Matrix
 
-Access to the dashboard is scoped by role. Each role sees a different version of the Command Center:
+The application enforces strict role-based access control (RBAC). Below is the breakdown of what each person can do:
 
-1.  **Municipal Commissioner (Superadmin)**
-    - **Visibility**: All 100 wards and all 4 zones.
-    - **Actions**: Monitor city-wide KPIs, track GFC readiness, view predictive festival surge alerts, and generate official MoHUA reports.
-2.  **Zonal Officer**
-    - **Visibility**: Only the wards within their assigned Zone (North, South, East, or West).
-    - **Actions**: Manage ward performance in their zone, create/assign corrective tasks, and escalate issues.
-3.  **Ward Supervisor**
-    - **Visibility**: Only their specific assigned Ward.
-    - **Actions**: Submit daily field audits (KPIs) with photo evidence and manage local ward tasks.
+### 1. Municipal Commissioner (Superadmin)
+*   **Scope**: City-Wide (All 100 Wards / 4 Zones).
+*   **Key Features**:
+    *   **City Command**: Monitor aggregated KPIs (Segregation, D2D, Hygiene, Processing) for the entire city.
+    *   **Ward Heatmap**: Visual 10-by-10 grid of all wards colored by performance.
+    *   **GFC Tracker**: Manage all 49 MoHUA certification indicators and view composite readiness scores.
+    *   **Staff Management**: Onboard new officers, assign roles, and manage permissions.
+    *   **Official Reporting**: Generate and download municipal reports for state/central government.
+    *   **Global Alerts**: Monitor all critical system alerts and escalations.
+
+### 2. Zonal Officer
+*   **Scope**: Zonal (assigned North, South, East, or West).
+*   **Key Features**:
+    *   **Zonal Command**: Filtered view of the dashboard showing only wards within their jurisdiction.
+    *   **Task Management**: Create and assign corrective action tasks to Ward Supervisors.
+    *   **Alert Resolution**: Address alerts triggered by KPI breaches in their zone.
+    *   **Issue Escalation**: Raise critical zonal issues directly to the Commissioner.
+
+### 3. Ward Supervisor
+*   **Scope**: Local (assigned to a specific Ward ID).
+*   **Key Features**:
+    *   **Daily Field Audits**: Submit daily metrics for segregation and collection with photo evidence.
+    *   **Task Execution**: Receive and mark tasks as "In Resolution" or "Completed" for their ward.
+    *   **Ward History**: View 30-day performance trends to identify local bottlenecks.
+    *   **Local Alerts**: Monitor alerts specifically affecting their assigned ward.
 
 ## Test Credentials
 
-If you have run the seed script (`npm run seed`), you can log in with the following accounts (all use the same password you set in the Firebase Console, or you can create new ones via the `/signup` page):
+Log in with these pre-seeded accounts (password set in Firebase Console):
 
 | Role | Email | Scope |
 | :--- | :--- | :--- |

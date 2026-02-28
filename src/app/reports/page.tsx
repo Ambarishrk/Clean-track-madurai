@@ -1,17 +1,26 @@
-
 'use client';
 
-import { useCollection, useMemoFirebase, useFirestore } from '@/firebase';
-import { collection, query, orderBy } from 'firebase/firestore';
-import { Report } from '@/lib/types';
+import { useCollection, useMemoFirebase, useFirestore, useUser, useDoc } from '@/firebase';
+import { collection, query, orderBy, doc } from 'firebase/firestore';
+import { Report, UserProfile } from '@/lib/types';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { FileText, Download, Calendar, Filter, FileBarChart } from 'lucide-react';
+import { FileText, Download, Calendar, Filter, FileBarChart, ShieldAlert } from 'lucide-react';
 import { format } from 'date-fns';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
+import { useRouter } from 'next/navigation';
 
 export default function ReportsPage() {
   const db = useFirestore();
+  const router = useRouter();
+  const { user } = useUser();
+
+  const profileRef = useMemoFirebase(() => {
+    if (!db || !user?.uid) return null;
+    return doc(db, 'users', user.uid);
+  }, [db, user?.uid]);
+
+  const { data: currentUserProfile } = useDoc<UserProfile>(profileRef);
 
   const reportsQuery = useMemoFirebase(() => {
     if (!db) return null;
@@ -19,6 +28,17 @@ export default function ReportsPage() {
   }, [db]);
 
   const { data: reports, isLoading } = useCollection<Report>(reportsQuery);
+
+  if (currentUserProfile && currentUserProfile.role !== 'MUNICIPAL_COMMISSIONER') {
+    return (
+      <div className="container mx-auto p-12 flex flex-col items-center justify-center min-h-[60vh] text-center">
+        <ShieldAlert className="h-16 w-16 text-destructive mb-4" />
+        <h1 className="text-2xl font-black uppercase italic text-slate-800">Authorization Required</h1>
+        <p className="text-muted-foreground font-medium max-w-md mt-2">Access to official municipal reports and MoHUA documentation is restricted to the Municipal Commissioner.</p>
+        <Button className="mt-8 rounded-xl font-bold" onClick={() => router.push('/')}>Return to Dashboard</Button>
+      </div>
+    );
+  }
 
   return (
     <div className="container mx-auto p-6 space-y-10">
