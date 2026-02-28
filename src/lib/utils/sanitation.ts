@@ -1,21 +1,22 @@
 import { KPI_THRESHOLDS } from '@/lib/constants'
+import { KPIStatus } from '@/lib/types'
 
 // Get RAG status from a numeric KPI value
-export const getKpiStatus = (value: number): 'green' | 'amber' | 'red' => {
+export const getKpiStatus = (value: number): KPIStatus => {
   if (value >= KPI_THRESHOLDS.green) return 'green'
   if (value >= KPI_THRESHOLDS.amber) return 'amber'
   return 'red'
 }
 
 // Get Tailwind color classes from KPI status
-const STATUS_COLORS: Record<string, string> = {
+const STATUS_COLORS: Record<KPIStatus, string> = {
   green: 'text-green-600 bg-green-50 border-green-200',
   amber: 'text-amber-600 bg-amber-50 border-amber-200',
   red: 'text-red-600 bg-red-50 border-red-200',
 }
 
 export const getStatusColor = (status: string): string => {
-  return STATUS_COLORS[status] || 'text-gray-600 bg-gray-50 border-gray-200';
+  return STATUS_COLORS[status as KPIStatus] || 'text-gray-600 bg-gray-50 border-gray-200';
 }
 
 export const getStatusText = (status: string): string => {
@@ -32,14 +33,14 @@ export const getStatusText = (status: string): string => {
 }
 
 // Get hex color from KPI status (for charts)
-const STATUS_HEX: Record<string, string> = {
+const STATUS_HEX: Record<KPIStatus, string> = {
   green: '#16A34A',
   amber: '#D97706',
   red: '#DC2626',
 }
 
 export const getStatusHex = (status: string): string => {
-  return STATUS_HEX[status] || '#6B7280';
+  return STATUS_HEX[status as KPIStatus] || '#6B7280';
 }
 
 // Compute overall status from 4 KPI values (worst one wins)
@@ -48,7 +49,7 @@ export const computeOverallStatus = (
   d2d: number,
   hygiene: number,
   processing: number
-): 'green' | 'amber' | 'red' => {
+): KPIStatus => {
   const statuses = [segregation, d2d, hygiene, processing].map(getKpiStatus)
   if (statuses.includes('red')) return 'red'
   if (statuses.includes('amber')) return 'amber'

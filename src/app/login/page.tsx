@@ -11,9 +11,11 @@ import { useRouter } from 'next/navigation';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { useToast } from '@/hooks/use-toast';
 import { ShieldCheck, Mail, Lock, Loader2, ArrowRight, Info, UserPlus } from 'lucide-react';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
+import { Label } from '@/components/ui/label';
 
 export default function LoginPage() {
   const [email, setEmail] = useState('');
@@ -50,13 +52,6 @@ export default function LoginPage() {
     } catch (error: any) {
       console.error(error);
       let description = error.message;
-
-      if (error.code === 'auth/operation-not-allowed') {
-        description = "Google Sign-In is not enabled in the Firebase Console. Go to Authentication > Sign-in method to enable it.";
-      } else if (error.code === 'auth/popup-blocked') {
-        description = "The login popup was blocked by your browser. Please allow popups for this site in your browser settings and try again.";
-      }
-
       toast({
         title: "Google Auth Failed",
         description,
@@ -64,6 +59,18 @@ export default function LoginPage() {
       });
     } finally {
       setIsLoading(false);
+    }
+  };
+
+  const handleRoleSelect = (role: string) => {
+    const credentials: Record<string, { email: string }> = {
+      'COMMISSIONER': { email: 'commissioner@cleantrack.in' },
+      'ZONAL': { email: 'north@cleantrack.in' },
+      'WARD': { email: 'ward1@cleantrack.in' },
+    };
+    if (credentials[role]) {
+      setEmail(credentials[role].email);
+      setPassword('password123');
     }
   };
 
@@ -107,37 +114,19 @@ export default function LoginPage() {
                 required
               />
             </div>
-            <div className="flex flex-col gap-2 pt-2">
-              <span className="text-[10px] font-bold uppercase text-muted-foreground tracking-widest text-center">Quick Role Login</span>
-              <div className="flex gap-2">
-                <Button
-                  type="button"
-                  variant="secondary"
-                  size="sm"
-                  className="w-full text-[10px] py-1 h-8 rounded-lg"
-                  onClick={() => { setEmail('commissioner@cleantrack.in'); setPassword('password123'); }}
-                >
-                  Commissioner
-                </Button>
-                <Button
-                  type="button"
-                  variant="secondary"
-                  size="sm"
-                  className="w-full text-[10px] py-1 h-8 rounded-lg"
-                  onClick={() => { setEmail('north@cleantrack.in'); setPassword('password123'); }}
-                >
-                  Zonal
-                </Button>
-                <Button
-                  type="button"
-                  variant="secondary"
-                  size="sm"
-                  className="w-full text-[10px] py-1 h-8 rounded-lg"
-                  onClick={() => { setEmail('ward1@cleantrack.in'); setPassword('password123'); }}
-                >
-                  Ward
-                </Button>
-              </div>
+
+            <div className="space-y-2 pt-2">
+              <Label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground">Select Governance Role</Label>
+              <Select onValueChange={handleRoleSelect}>
+                <SelectTrigger className="h-12 rounded-xl bg-slate-50 border-slate-200">
+                  <SelectValue placeholder="Choose your role..." />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="COMMISSIONER">Municipal Commissioner</SelectItem>
+                  <SelectItem value="ZONAL">Zonal Officer (North)</SelectItem>
+                  <SelectItem value="WARD">Ward Supervisor (W001)</SelectItem>
+                </SelectContent>
+              </Select>
             </div>
 
             <Button
@@ -186,7 +175,7 @@ export default function LoginPage() {
             <Info className="h-4 w-4 text-blue-600" />
             <AlertTitle className="text-blue-800 text-xs font-bold uppercase">Development Note</AlertTitle>
             <AlertDescription className="text-blue-700 text-[10px] leading-relaxed">
-              Use the "New Staff Signup" above to enter new officers into the system manually for testing.
+              Select a role above to auto-fill pre-seeded credentials for testing.
             </AlertDescription>
           </Alert>
         </CardContent>
