@@ -14,9 +14,11 @@ const STATUS_COLORS: Record<string, string> = {
   amber: 'text-amber-600 bg-amber-50 border-amber-200',
   red: 'text-red-600 bg-red-50 border-red-200',
 }
-export const getStatusColor = (status: 'green' | 'amber' | 'red' | string) => STATUS_COLORS[status] ?? 'text-gray-600 bg-gray-50 border-gray-200'
 
-export const getStatusText = (status: 'green' | 'amber' | 'red' | string) => {
+export const getStatusColor = (status: string) => 
+  STATUS_COLORS[status as keyof typeof STATUS_COLORS] ?? 'text-gray-600 bg-gray-50 border-gray-200'
+
+export const getStatusText = (status: string) => {
   switch (status) {
     case 'green':
       return 'text-green-600'
@@ -35,7 +37,10 @@ const STATUS_HEX: Record<string, string> = {
   amber: '#D97706',
   red: '#DC2626',
 }
-export const getStatusHex = (status: 'green' | 'amber' | 'red' | string) => STATUS_HEX[status] ?? '#6B7280'
+
+export const getStatusHex = (status: string) => 
+  STATUS_HEX[status as keyof typeof STATUS_HEX] ?? '#6B7280'
+
 // Compute overall status from 4 KPI values (worst one wins)
 export const computeOverallStatus = (
   segregation: number,

@@ -1,3 +1,4 @@
+
 import {
   ref,
   uploadBytesResumable,
@@ -11,7 +12,7 @@ export const storageService = {
    * Upload avatar image
    */
   async uploadAvatar(
-    storage: Storage,
+    storage: FirebaseStorage,
     userId: string,
     file: File,
     onProgress?: (progress: number) => void
@@ -33,7 +34,7 @@ export const storageService = {
    * Upload KPI photo
    */
   async uploadKpiPhoto(
-    storage: Storage,
+    storage: FirebaseStorage,
     snapshotId: string,
     file: File,
     onProgress?: (progress: number) => void
@@ -54,7 +55,7 @@ export const storageService = {
    * Upload GFC evidence
    */
   async uploadGfcEvidence(
-    storage: Storage,
+    storage: FirebaseStorage,
     indicatorId: string,
     file: File,
     onProgress?: (progress: number) => void
@@ -73,7 +74,7 @@ export const storageService = {
    * Upload task evidence
    */
   async uploadTaskEvidence(
-    storage: Storage,
+    storage: FirebaseStorage,
     taskId: string,
     file: File,
     onProgress?: (progress: number) => void

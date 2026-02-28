@@ -17,6 +17,7 @@ export interface UserProfile {
 
 export interface Ward {
   id: string; // W001-W100
+  wardId: string;
   wardName: string;
   zoneId: string;
   assignedOfficerId?: string;
