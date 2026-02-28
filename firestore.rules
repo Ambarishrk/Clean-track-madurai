@@ -6,8 +6,8 @@ service cloud.firestore {
      * CLEAN-TRACK SECURITY RULES
      * 
      * Optimized for municipal staff collaboration. 
-     * Allows all authenticated staff to read operational metrics.
-     * Restricts destructive actions and administrative changes to the Commissioner.
+     * Allows all authenticated staff to read operational metrics (KPIs, Alerts, Tasks, etc.).
+     * Restricts administrative and destructive actions to the Commissioner.
      */
 
     // --- HELPER FUNCTIONS ---
@@ -16,39 +16,33 @@ service cloud.firestore {
       return request.auth != null;
     }
 
-    function isOwner(userId) {
-      return isSignedIn() && request.auth.uid == userId;
-    }
-
-    // Safely check user role using the get() function
-    function getUserRole() {
-      return get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role;
-    }
-
+    // Check if the user is a Commissioner by looking at their profile
+    // Note: get() calls in rules are fine for get/write, but broad queries 
+    // are better handled by checking auth state and allowing signed-in reads.
     function isCommissioner() {
-      return isSignedIn() && getUserRole() == 'MUNICIPAL_COMMISSIONER';
+      return isSignedIn() && 
+        get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'MUNICIPAL_COMMISSIONER';
     }
 
     // --- COLLECTION RULES ---
 
-    // User profiles
+    // User profiles - Any signed-in staff can see directories, but only owners/admin can edit
     match /users/{userId} {
-      allow get: if isSignedIn();
-      allow list: if isSignedIn();
-      allow create: if isOwner(userId);
-      allow update: if isOwner(userId) || isCommissioner();
+      allow read: if isSignedIn();
+      allow create: if isSignedIn();
+      allow update: if isSignedIn() && (request.auth.uid == userId || isCommissioner());
       allow delete: if isCommissioner();
     }
 
-    // Notifications
+    // Notifications - Scoped to the individual user
     match /notifications/{notifId} {
-      allow read: if isSignedIn();
+      allow read: if isSignedIn() && resource.data.userId == request.auth.uid;
       allow create: if isSignedIn();
-      allow update: if isSignedIn() && (resource.data.userId == request.auth.uid);
-      allow delete: if isSignedIn() && (resource.data.userId == request.auth.uid || isCommissioner());
+      allow update: if isSignedIn() && resource.data.userId == request.auth.uid;
+      allow delete: if isSignedIn() && resource.data.userId == request.auth.uid;
     }
 
-    // Administrative Boundaries (Static metadata)
+    // Administrative Boundaries & Metadata - Readable by all staff
     match /wards/{wardId} {
       allow read: if isSignedIn();
       allow write: if isCommissioner();
@@ -59,8 +53,8 @@ service cloud.firestore {
       allow write: if isCommissioner();
     }
 
-    // Operational Data
-    // We allow 'read' for all authenticated staff to support the unified command center.
+    // Operational Data (KPIs, Alerts, Tasks, GFC)
+    // We allow READ for all authenticated staff to support the "Unified Command Center"
     
     match /kpi_snapshots/{id} {
       allow read: if isSignedIn();
@@ -71,7 +65,7 @@ service cloud.firestore {
     match /alerts/{id} {
       allow read: if isSignedIn();
       allow create: if isSignedIn(); 
-      allow update: if isSignedIn(); // Allow resolving/assigning alerts
+      allow update: if isSignedIn(); // Allow resolving/assigning
       allow delete: if isCommissioner();
     }
 
@@ -87,11 +81,10 @@ service cloud.firestore {
       allow write: if isCommissioner();
     }
 
+    // Legacy/Support Collections
     match /escalations/{id} {
       allow read: if isSignedIn();
-      allow create: if isSignedIn();
-      allow update: if isSignedIn();
-      allow delete: if isCommissioner();
+      allow write: if isSignedIn();
     }
 
     match /predictive_alerts/{id} {
@@ -103,15 +96,7 @@ service cloud.firestore {
       allow read: if isSignedIn();
       allow write: if isCommissioner();
     }
-    
-    match /posts/{id} {
-      allow read: if isSignedIn();
-      allow create: if isSignedIn();
-      allow update: if isSignedIn() && (resource.data.authorId == request.auth.uid || isCommissioner());
-      allow delete: if isSignedIn() && (resource.data.authorId == request.auth.uid || isCommissioner());
-    }
 
-    // Supporting collections for garbage and toilet monitoring
     match /collection_trips/{id} {
       allow read: if isSignedIn();
       allow write: if isSignedIn();
