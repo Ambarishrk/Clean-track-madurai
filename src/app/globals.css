@@ -1,4 +1,3 @@
-
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -11,33 +10,40 @@
     --card-foreground: 222 47% 11%;
     --popover: 0 0% 100%;
     --popover-foreground: 222 47% 11%;
-    --primary: 215 73% 37%; /* Madurai Brand Blue #1A56A4 */
+    
+    /* Clean India Primary: Deep Mission Blue */
+    --primary: 221 83% 28%; 
     --primary-foreground: 210 40% 98%;
-    --secondary: 210 40% 96.1%;
-    --secondary-foreground: 222 47% 11%;
+    
+    /* Clean India Secondary: Saffron-tinted Neutral */
+    --secondary: 35 100% 97%;
+    --secondary-foreground: 27 98% 30%;
+    
     --muted: 210 40% 96.1%;
     --muted-foreground: 215.4 16.3% 46.9%;
-    --accent: 210 40% 96.1%;
-    --accent-foreground: 222 47% 11%;
+    --accent: 221 83% 95%;
+    --accent-foreground: 221 83% 28%;
+    
     --destructive: 0 84.2% 60.2%;
     --destructive-foreground: 210 40% 98%;
     --border: 214.3 31.8% 91.4%;
     --input: 214.3 31.8% 91.4%;
-    --ring: 215 73% 37%;
-    --radius: 0.75rem;
+    --ring: 221 83% 28%;
+    --radius: 1rem;
     
-    /* SBM 2.0 RAG System */
-    --status-green: 142 71% 36%;  /* KPI >= 85% */
-    --status-amber: 35 92% 44%;   /* KPI 60-84% */
-    --status-red: 0 72% 51%;      /* KPI < 60% */
+    /* Swachh Bharat RAG System (Red-Amber-Green) */
+    --status-green: 142 76% 36%;  /* Mission Green #138808 */
+    --status-amber: 27 98% 54%;   /* Mission Saffron #FF9933 */
+    --status-red: 0 72% 51%;      /* Critical Red */
   }
 }
 
 @layer base {
   * { @apply border-border; }
-  body { @apply bg-background text-foreground font-sans; }
+  body { @apply bg-background text-foreground font-sans antialiased; }
 }
 
+/* Custom Status Classes */
 .status-green { color: hsl(var(--status-green)); }
 .bg-status-green { background-color: hsl(var(--status-green)); }
 .border-status-green { border-color: hsl(var(--status-green)); }
@@ -50,13 +56,22 @@
 .bg-status-red { background-color: hsl(var(--status-red)); }
 .border-status-red { border-color: hsl(var(--status-red)); }
 
+/* Utility Classes */
 .custom-scrollbar::-webkit-scrollbar {
-  width: 4px;
+  width: 5px;
 }
 .custom-scrollbar::-webkit-scrollbar-track {
   background: transparent;
 }
 .custom-scrollbar::-webkit-scrollbar-thumb {
-  background: hsl(var(--muted));
+  background: hsl(var(--primary) / 0.1);
   border-radius: 10px;
+}
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: hsl(var(--primary) / 0.2);
+}
+
+/* Glassmorphism Effects */
+.glass {
+  @apply bg-white/70 backdrop-blur-md border border-white/20;
 }
