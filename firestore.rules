@@ -6,7 +6,7 @@ service cloud.firestore {
      * CLEAN-TRACK SECURITY RULES
      * 
      * Optimized for municipal staff collaboration. 
-     * Allows all authenticated staff to read operational metrics (KPIs, Alerts, Tasks, GFC).
+     * Allows all authenticated staff to read operational metrics.
      * Restricts destructive actions and administrative changes to the Commissioner.
      */
 
@@ -20,7 +20,7 @@ service cloud.firestore {
       return isSignedIn() && request.auth.uid == userId;
     }
 
-    // Safely check user role - returns null if doc doesn't exist
+    // Safely check user role using the get() function
     function getUserRole() {
       return get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role;
     }
@@ -42,9 +42,7 @@ service cloud.firestore {
 
     // Notifications
     match /notifications/{notifId} {
-      // Users can see their own notifications.
-      // We allow list for any signed-in user, but they should query by userId.
-      allow read: if isSignedIn();
+      allow read, list: if isSignedIn();
       allow create: if isSignedIn();
       allow update: if isSignedIn() && (resource.data.userId == request.auth.uid);
       allow delete: if isSignedIn() && (resource.data.userId == request.auth.uid || isCommissioner());
@@ -52,65 +50,76 @@ service cloud.firestore {
 
     // Administrative Boundaries (Static metadata)
     match /wards/{wardId} {
-      allow read: if isSignedIn();
+      allow read, list: if isSignedIn();
       allow write: if isCommissioner();
     }
 
     match /zones/{zoneId} {
-      allow read: if isSignedIn();
+      allow read, list: if isSignedIn();
       allow write: if isCommissioner();
     }
 
     // Operational Data
-    // We allow 'read' (get/list) for all authenticated staff to support the unified command center.
+    // We allow 'read' and 'list' for all authenticated staff to support the unified command center.
     
     match /kpi_snapshots/{id} {
-      allow read: if isSignedIn();
+      allow read, list: if isSignedIn();
       allow create: if isSignedIn();
       allow update, delete: if isCommissioner();
     }
 
     match /alerts/{id} {
-      allow read: if isSignedIn();
+      allow read, list: if isSignedIn();
       allow create: if isSignedIn(); 
-      allow update: if isSignedIn(); // Allow resolving alerts
+      allow update: if isSignedIn(); // Allow resolving/assigning alerts
       allow delete: if isCommissioner();
     }
 
     match /tasks/{id} {
-      allow read: if isSignedIn();
+      allow read, list: if isSignedIn();
       allow create: if isSignedIn(); 
       allow update: if isSignedIn();
       allow delete: if isCommissioner();
     }
 
     match /gfc_indicators/{id} {
-      allow read: if isSignedIn();
+      allow read, list: if isSignedIn();
       allow write: if isCommissioner();
     }
 
     match /escalations/{id} {
-      allow read: if isSignedIn();
+      allow read, list: if isSignedIn();
       allow create: if isSignedIn();
       allow update: if isSignedIn();
       allow delete: if isCommissioner();
     }
 
     match /predictive_alerts/{id} {
-      allow read: if isSignedIn();
+      allow read, list: if isSignedIn();
       allow write: if isCommissioner();
     }
     
     match /reports/{id} {
-      allow read: if isSignedIn();
+      allow read, list: if isSignedIn();
       allow write: if isCommissioner();
     }
     
     match /posts/{id} {
-      allow read: if isSignedIn();
+      allow read, list: if isSignedIn();
       allow create: if isSignedIn();
       allow update: if isSignedIn() && (resource.data.authorId == request.auth.uid || isCommissioner());
       allow delete: if isSignedIn() && (resource.data.authorId == request.auth.uid || isCommissioner());
+    }
+
+    // Supporting collections for garbage and toilet monitoring
+    match /collection_trips/{id} {
+      allow read, list: if isSignedIn();
+      allow write: if isSignedIn();
+    }
+
+    match /toilet_facilities/{id} {
+      allow read, list: if isSignedIn();
+      allow write: if isSignedIn();
     }
   }
 }
