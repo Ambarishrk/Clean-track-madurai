@@ -32,6 +32,14 @@ The application enforces strict role-based access control (RBAC). Below is the b
     *   **Ward History**: View 30-day performance trends to identify local bottlenecks.
     *   **Local Alerts**: Monitor alerts specifically affecting their assigned ward.
 
+## Troubleshooting
+
+### Divergent Branches Error
+If you see `fatal: Need to specify how to reconcile divergent branches` when pulling, run:
+```bash
+git config pull.rebase false
+```
+
 ## Test Credentials
 
 Log in with these pre-seeded accounts (password set in Firebase Console):

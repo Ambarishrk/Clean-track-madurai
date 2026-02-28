@@ -16,20 +16,19 @@ const STATUS_COLORS: Record<KPIStatus, string> = {
 }
 
 export const getStatusColor = (status: string): string => {
-  return STATUS_COLORS[status as KPIStatus] || 'text-gray-600 bg-gray-50 border-gray-200';
+  const kpiStatus = status as KPIStatus;
+  return STATUS_COLORS[kpiStatus] || 'text-gray-600 bg-gray-50 border-gray-200';
+}
+
+const STATUS_TEXT_COLORS: Record<KPIStatus, string> = {
+  green: 'text-green-600',
+  amber: 'text-amber-600',
+  red: 'text-red-600',
 }
 
 export const getStatusText = (status: string): string => {
-  switch (status) {
-    case 'green':
-      return 'text-green-600'
-    case 'amber':
-      return 'text-amber-600'
-    case 'red':
-      return 'text-red-600'
-    default:
-      return 'text-muted-foreground'
-  }
+  const kpiStatus = status as KPIStatus;
+  return STATUS_TEXT_COLORS[kpiStatus] || 'text-muted-foreground';
 }
 
 // Get hex color from KPI status (for charts)
@@ -40,7 +39,8 @@ const STATUS_HEX: Record<KPIStatus, string> = {
 }
 
 export const getStatusHex = (status: string): string => {
-  return STATUS_HEX[status as KPIStatus] || '#6B7280';
+  const kpiStatus = status as KPIStatus;
+  return STATUS_HEX[kpiStatus] || '#6B7280';
 }
 
 // Compute overall status from 4 KPI values (worst one wins)

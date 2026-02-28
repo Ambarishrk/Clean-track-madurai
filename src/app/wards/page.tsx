@@ -14,7 +14,7 @@ export default function WardsPage() {
 
   const wardsQuery = useMemoFirebase(() => {
     if (!db) return null;
-    return query(collection(db, 'wards'), orderBy('wardId'));
+    return query(collection(db, 'wards'), orderBy('id'));
   }, [db]);
 
   const { data: wards, isLoading } = useCollection<Ward>(wardsQuery);
@@ -56,13 +56,15 @@ export default function WardsPage() {
                   <TableRow><TableCell colSpan={6} className="text-center py-10">Fetching ward data...</TableCell></TableRow>
                 ) : (wards || MOCK_WARDS).map((ward) => (
                   <TableRow key={ward.id}>
-                    <TableCell className="font-black text-primary italic">{ward.wardId || 'W000'}</TableCell>
+                    <TableCell className="font-black text-primary italic">{ward.id || 'W000'}</TableCell>
                     <TableCell className="font-bold text-sm">{ward.wardName}</TableCell>
                     <TableCell>
                       <Badge variant="outline" className="text-[9px] font-black uppercase border-primary/20 text-primary">Zone {ward.zoneId}</Badge>
                     </TableCell>
-                    <TableCell className="text-xs font-medium text-slate-600 flex items-center gap-1">
-                      <Users className="h-3 w-3" /> {ward.population?.toLocaleString()}
+                    <TableCell className="text-xs font-medium text-slate-600">
+                      <div className="flex items-center gap-1">
+                        <Users className="h-3 w-3" /> {ward.population?.toLocaleString()}
+                      </div>
                     </TableCell>
                     <TableCell className="text-xs font-medium text-slate-600">
                       {ward.householdCount?.toLocaleString()}
@@ -84,7 +86,7 @@ export default function WardsPage() {
 }
 
 const MOCK_WARDS: Ward[] = Array.from({ length: 10 }, (_, i) => ({
-  id: `w${i+1}`,
+  id: `W${(i+1).toString().padStart(3, '0')}`,
   wardId: `W${(i+1).toString().padStart(3, '0')}`,
   wardName: `Ward Area ${i+1}`,
   zoneId: `Z${Math.floor(i/25) + 1}`,
