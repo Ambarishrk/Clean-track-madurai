@@ -1,4 +1,3 @@
-
 'use client';
 
 import { useUser, useFirestore, useCollection, useMemoFirebase } from '@/firebase';
@@ -6,10 +5,11 @@ import { collection, query, where, orderBy, updateDoc, doc } from 'firebase/fire
 import { Notification } from '@/lib/types';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { Bell, Check, Clock, Trash2 } from 'lucide-react';
+import { Bell, Check, Clock } from 'lucide-react';
 import { formatDistanceToNow } from 'date-fns';
 import { Button } from '@/components/ui/button';
 import { useToast } from '@/hooks/use-toast';
+import { toDate } from '@/lib/utils';
 
 export default function NotificationsPage() {
   const { user } = useUser();
@@ -29,7 +29,15 @@ export default function NotificationsPage() {
 
   const markAsRead = async (id: string) => {
     if (!db) return;
-    await updateDoc(doc(db, 'notifications', id), { read: true });
+    try {
+      await updateDoc(doc(db, 'notifications', id), { read: true });
+    } catch (e) {
+      toast({ 
+        variant: "destructive", 
+        title: "Update Failed", 
+        description: "Could not mark notification as read." 
+      });
+    }
   };
 
   return (
@@ -66,7 +74,7 @@ export default function NotificationsPage() {
                   <h3 className="font-bold text-slate-800">{notif.title}</h3>
                   <span className="text-[10px] font-bold text-muted-foreground flex items-center gap-1">
                     <Clock className="h-3 w-3" />
-                    {formatDistanceToNow(notif.createdAt)} ago
+                    {formatDistanceToNow(toDate(notif.createdAt))} ago
                   </span>
                 </div>
                 <p className="text-sm text-slate-600 leading-relaxed">{notif.message}</p>
