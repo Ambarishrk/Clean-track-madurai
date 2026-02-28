@@ -5,8 +5,8 @@ import Navbar from '@/components/layout/Navbar';
 import { FirebaseClientProvider } from '@/firebase';
 
 export const metadata: Metadata = {
-  title: 'SyncSphere | Social Connectivity Reimagined',
-  description: 'Connect, share, and discover creative content on SyncSphere.',
+  title: 'Clean-Track | Madurai Municipal Sanitation Governance',
+  description: 'Unified dashboard for SBM 2.0 GFC certification and municipal monitoring.',
 };
 
 export default function RootLayout({

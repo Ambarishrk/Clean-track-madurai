@@ -8,7 +8,7 @@ export const getKpiStatus = (value: number): 'green' | 'amber' | 'red' => {
 }
 
 // Get Tailwind color classes from KPI status
-const STATUS_COLORS: Record<string, string> = {
+const STATUS_COLORS: Record<'green' | 'amber' | 'red', string> = {
   green: 'text-green-600 bg-green-50 border-green-200',
   amber: 'text-amber-600 bg-amber-50 border-amber-200',
   red: 'text-red-600 bg-red-50 border-red-200',
@@ -35,7 +35,7 @@ export const getStatusText = (status: string): string => {
 }
 
 // Get hex color from KPI status (for charts)
-const STATUS_HEX: Record<string, string> = {
+const STATUS_HEX: Record<'green' | 'amber' | 'red', string> = {
   green: '#16A34A',
   amber: '#D97706',
   red: '#DC2626',
