@@ -1,24 +1,55 @@
 
-export const getKpiStatus = (value: number): 'green' | 'amber' | 'red' => {
-  if (value >= 85) return 'green';
-  if (value >= 60) return 'amber';
-  return 'red';
-};
+import { KPI_THRESHOLDS } from '@/lib/constants'
 
-export const getStatusColor = (status: 'green' | 'amber' | 'red' | string) => {
-  switch (status) {
-    case 'green': return 'bg-status-green';
-    case 'amber': return 'bg-status-amber';
-    case 'red': return 'bg-status-red';
-    default: return 'bg-muted';
-  }
-};
+// Get RAG status from a numeric KPI value
+export const getKpiStatus = (value: number): 'green' | 'amber' | 'red' => {
+  if (value >= KPI_THRESHOLDS.green) return 'green'
+  if (value >= KPI_THRESHOLDS.amber) return 'amber'
+  return 'red'
+}
+
+// Get Tailwind color classes from KPI status
+export const getStatusColor = (status: 'green' | 'amber' | 'red' | string) => ({
+  green: 'text-green-600 bg-green-50 border-green-200',
+  amber: 'text-amber-600 bg-amber-50 border-amber-200',
+  red: 'text-red-600 bg-red-50 border-red-200',
+}[status as keyof typeof status] ?? 'text-gray-600 bg-gray-50 border-gray-200')
 
 export const getStatusText = (status: 'green' | 'amber' | 'red' | string) => {
   switch (status) {
-    case 'green': return 'text-status-green';
-    case 'amber': return 'text-status-amber';
-    case 'red': return 'text-status-red';
-    default: return 'text-muted-foreground';
+    case 'green':
+      return 'text-green-600'
+    case 'amber':
+      return 'text-amber-600'
+    case 'red':
+      return 'text-red-600'
+    default:
+      return 'text-muted-foreground'
   }
-};
+}
+
+// Get hex color from KPI status (for charts)
+export const getStatusHex = (status: 'green' | 'amber' | 'red' | string) => ({
+  green: '#16A34A',
+  amber: '#D97706',
+  red: '#DC2626',
+}[status as keyof typeof status] ?? '#6B7280')
+
+// Compute overall status from 4 KPI values (worst one wins)
+export const computeOverallStatus = (
+  segregation: number,
+  d2d: number,
+  hygiene: number,
+  processing: number
+): 'green' | 'amber' | 'red' => {
+  const statuses = [segregation, d2d, hygiene, processing].map(getKpiStatus)
+  if (statuses.includes('red')) return 'red'
+  if (statuses.includes('amber')) return 'amber'
+  return 'green'
+}
+
+// Average an array of numbers
+export const average = (nums: number[]): number => {
+  if (!nums.length) return 0
+  return Math.round(nums.reduce((a, b) => a + b, 0) / nums.length)
+}

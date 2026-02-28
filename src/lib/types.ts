@@ -32,6 +32,8 @@ export interface Zone {
   wardIds: string[];
 }
 
+export type KPIStatus = 'green' | 'amber' | 'red'
+
 export interface KpiSnapshot {
   id?: string;
   wardId: string;
@@ -41,24 +43,52 @@ export interface KpiSnapshot {
   d2dCoverageRate: number; // 0-100
   toiletHygieneScore: number; // 0-100
   wasteProcessingRate: number; // 0-100
-  status: 'green' | 'amber' | 'red';
+  status: KPIStatus;
+  notes?: string;
+  photoEvidenceURL?: string | null;
   recordedBy: string;
   createdAt: number;
 }
 
-export interface Alert {
-  id: string;
-  type: 'kpi_breach' | 'vehicle_breakdown' | 'missed_route' | 'hygiene_breach' | 'surge_forecast' | 'grievance_sla';
+export interface KpiAggregate {
   wardId?: string;
   zoneId?: string;
-  severity: 'critical' | 'high' | 'medium';
+  avgSegregation: number;
+  avgD2d: number;
+  avgHygiene: number;
+  avgProcessing: number;
+  overallStatus: KPIStatus;
+  lastUpdated: Date;
+}
+
+export type AlertType =
+  | 'kpi_breach'
+  | 'vehicle_breakdown'
+  | 'missed_route'
+  | 'hygiene_breach'
+  | 'surge_forecast'
+  | 'grievance_sla'
+  | 'data_feed_failure'
+
+export type AlertSeverity = 'critical' | 'high' | 'medium' | 'low'
+
+export interface Alert {
+  id: string;
+  type: AlertType;
+  wardId?: string;
+  zoneId?: string;
+  severity: AlertSeverity;
   title: string;
   description: string;
   isResolved: boolean;
-  assignedTo?: string;
-  createdAt: number;
+  assignedTo?: string | null;
   resolvedAt?: number;
+  resolvedBy?: string | null;
+  createdAt: number;
 }
+
+export type TaskStatus = 'open' | 'in_progress' | 'completed'
+export type TaskPriority = 'high' | 'medium' | 'low'
 
 export interface Task {
   id: string;
@@ -67,14 +97,18 @@ export interface Task {
   title: string;
   description: string;
   assignedTo: string;
+  assignedToName?: string;
   createdBy: string;
-  status: 'open' | 'in_progress' | 'completed';
+  status: TaskStatus;
+  priority: TaskPriority;
   dueDate: number;
-  priority: 'high' | 'medium' | 'low';
   photoEvidenceURL?: string | null;
+  completionNotes?: string | null;
   createdAt: number;
   updatedAt: number;
 }
+
+export type GfcStatus = 'pass' | 'fail' | 'in_progress'
 
 export interface GfcIndicator {
   id: string;
@@ -83,9 +117,36 @@ export interface GfcIndicator {
   weight: number;
   currentValue: number;
   targetValue: number;
-  status: 'pass' | 'fail' | 'in_progress';
+  unit?: string;
+  status: GfcStatus;
   evidenceURLs: string[];
   lastAssessed: number;
+}
+
+export interface GfcCompositeScore {
+  total: number;
+  byCategory: Record<string, number>;
+  lastCalculated: Date;
+}
+
+export type NotificationType =
+  | 'new_alert'
+  | 'task_assigned'
+  | 'task_completed'
+  | 'escalation'
+  | 'kpi_breach'
+  | 'sla_breach'
+  | 'report_ready'
+
+export interface Notification {
+  id: string;
+  userId: string;
+  type?: NotificationType;
+  title: string;
+  message: string;
+  link?: string;
+  read: boolean;
+  createdAt: number;
 }
 
 export interface Escalation {
@@ -100,22 +161,3 @@ export interface Escalation {
   slaDeadline: number;
   status: 'active' | 'resolved' | 'expired';
   notes: string;
-}
-
-export interface Notification {
-  id: string;
-  userId: string;
-  title: string;
-  message: string;
-  read: boolean;
-  createdAt: number;
-}
-
-export interface Report {
-  id: string;
-  type: 'daily' | 'weekly' | 'monthly';
-  title: string;
-  generatedAt: number;
-  fileUrl: string;
-  authorId: string;
-}
