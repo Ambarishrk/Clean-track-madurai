@@ -21,13 +21,12 @@ service cloud.firestore {
     }
 
     // Safely check user role - returns null if doc doesn't exist
-    function getUserData() {
-      return get(/databases/$(database)/documents/users/$(request.auth.uid)).data;
+    function getUserRole() {
+      return get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role;
     }
 
     function isCommissioner() {
-      let data = getUserData();
-      return isSignedIn() && data != null && data.role == 'MUNICIPAL_COMMISSIONER';
+      return isSignedIn() && getUserRole() == 'MUNICIPAL_COMMISSIONER';
     }
 
     // --- COLLECTION RULES ---
@@ -43,8 +42,9 @@ service cloud.firestore {
 
     // Notifications
     match /notifications/{notifId} {
-      // Users can see their own notifications. Commissioner can see system-wide logs.
-      allow read: if isSignedIn() && (resource.data.userId == request.auth.uid || isCommissioner());
+      // Users can see their own notifications.
+      // We allow list for any signed-in user, but they should query by userId.
+      allow read: if isSignedIn();
       allow create: if isSignedIn();
       allow update: if isSignedIn() && (resource.data.userId == request.auth.uid);
       allow delete: if isSignedIn() && (resource.data.userId == request.auth.uid || isCommissioner());
