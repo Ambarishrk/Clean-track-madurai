@@ -6,6 +6,40 @@ import {
   FirebaseStorage,
 } from 'firebase/storage'
 
+/**
+ * Internal helper for uploading files with progress tracking.
+ */
+async function uploadFileInternal(
+  storage: FirebaseStorage,
+  path: string,
+  file: File,
+  onProgress?: (progress: number) => void
+): Promise<string> {
+  const fileRef = ref(storage, path)
+  const uploadTask = uploadBytesResumable(fileRef, file)
+
+  return new Promise((resolve, reject) => {
+    uploadTask.on(
+      'state_changed',
+      snapshot => {
+        const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100
+        onProgress?.(progress)
+      },
+      error => {
+        reject(error)
+      },
+      async () => {
+        try {
+          const url = await getDownloadURL(fileRef)
+          resolve(url)
+        } catch (error) {
+          reject(error)
+        }
+      }
+    )
+  })
+}
+
 export const storageService = {
   /**
    * Upload avatar image
@@ -24,7 +58,7 @@ export const storageService = {
     }
 
     const path = `avatars/${userId}/avatar.jpg`
-    return this.uploadFileInternal(storage, path, file, onProgress)
+    return uploadFileInternal(storage, path, file, onProgress)
   },
 
   /**
@@ -44,7 +78,7 @@ export const storageService = {
     }
 
     const path = `kpi/${snapshotId}/photo.jpg`
-    return this.uploadFileInternal(storage, path, file, onProgress)
+    return uploadFileInternal(storage, path, file, onProgress)
   },
 
   /**
@@ -62,7 +96,7 @@ export const storageService = {
 
     const fileName = `${Date.now()}-${file.name}`
     const path = `gfc/${indicatorId}/${fileName}`
-    return this.uploadFileInternal(storage, path, file, onProgress)
+    return uploadFileInternal(storage, path, file, onProgress)
   },
 
   /**
@@ -82,7 +116,7 @@ export const storageService = {
     }
 
     const path = `tasks/${taskId}/evidence.jpg`
-    return this.uploadFileInternal(storage, path, file, onProgress)
+    return uploadFileInternal(storage, path, file, onProgress)
   },
 
   /**
@@ -91,39 +125,5 @@ export const storageService = {
   async deleteFile(storage: FirebaseStorage, path: string) {
     const fileRef = ref(storage, path)
     await deleteObject(fileRef)
-  },
-
-  /**
-   * Internal: Upload file with progress tracking
-   */
-  async uploadFileInternal(
-    storage: FirebaseStorage,
-    path: string,
-    file: File,
-    onProgress?: (progress: number) => void
-  ): Promise<string> {
-    const fileRef = ref(storage, path)
-    const uploadTask = uploadBytesResumable(fileRef, file)
-
-    return new Promise((resolve, reject) => {
-      uploadTask.on(
-        'state_changed',
-        snapshot => {
-          const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100
-          onProgress?.(progress)
-        },
-        error => {
-          reject(error)
-        },
-        async () => {
-          try {
-            const url = await getDownloadURL(fileRef)
-            resolve(url)
-          } catch (error) {
-            reject(error)
-          }
-        }
-      )
-    })
   },
 }

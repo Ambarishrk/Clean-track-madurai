@@ -56,7 +56,7 @@ export default function WardsPage() {
                   <TableRow><TableCell colSpan={6} className="text-center py-10">Fetching ward data...</TableCell></TableRow>
                 ) : (wards || MOCK_WARDS).map((ward) => (
                   <TableRow key={ward.id}>
-                    <TableCell className="font-black text-primary italic">{ward.wardId || 'W000'}</TableCell>
+                    <TableCell className="font-black text-primary italic">{(ward as Ward).wardId || 'W000'}</TableCell>
                     <TableCell className="font-bold text-sm">{ward.wardName}</TableCell>
                     <TableCell>
                       <Badge variant="outline" className="text-[9px] font-black uppercase border-primary/20 text-primary">Zone {ward.zoneId}</Badge>
@@ -83,7 +83,7 @@ export default function WardsPage() {
   );
 }
 
-const MOCK_WARDS: Ward[] = Array.from({ length: 10 }, (_, i) => ({
+const MOCK_WARDS: Partial<Ward>[] = Array.from({ length: 10 }, (_, i) => ({
   id: `w${i+1}`,
   wardId: `W${(i+1).toString().padStart(3, '0')}`,
   wardName: `Ward Area ${i+1}`,

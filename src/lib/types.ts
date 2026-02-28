@@ -190,8 +190,6 @@ export interface Post {
   commentsCount?: number;
 }
 
-// --- NEW SMART CITY AI & CITIZEN TYPES ---
-
 export type CitizenReportStatus = 'pending' | 'verified' | 'dispatched' | 'resolved';
 export type CitizenReportType = 'garbage_overflow' | 'clogged_drain' | 'unauthorized_dump' | 'other';
 

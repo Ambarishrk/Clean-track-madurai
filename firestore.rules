@@ -1,83 +1,77 @@
 rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
-
-    /**
-     * SMART CITY SANITATION INTELLIGENCE PLATFORM (SIP) - SECURITY RULES
-     * 
-     * Optimised for high-concurrency municipal operations and public participation.
-     * Enforces strict RBAC and granular data validation.
-     */
-
     function isSignedIn() {
       return request.auth != null;
     }
 
-    function getUserData() {
-      return get(/databases/$(database)/documents/users/$(request.auth.uid)).data;
-    }
-
-    function hasRole(role) {
-      return isSignedIn() && getUserData().role == role;
-    }
-
-    // --- PUBLIC & CITIZEN ACCESS ---
-    
-    // Allow anyone to read city-wide health scores and public summaries
-    match /summaries/{summaryId} {
-      allow read: if true; 
-      allow write: if hasRole('MUNICIPAL_COMMISSIONER');
-    }
-
-    // Citizen Reports: Anyone can create, but only staff can list/manage
-    match /citizen_reports/{reportId} {
-      allow create: if true; 
-      allow read, list: if isSignedIn();
-      allow update, delete: if hasRole('MUNICIPAL_COMMISSIONER') || hasRole('ZONAL_OFFICER');
-    }
-
-    // --- MUNICIPAL OPERATIONS ---
-
+    // Allow staff to read profiles to verify roles
     match /users/{userId} {
-      allow create: if isSignedIn();
       allow read: if isSignedIn();
-      allow update, delete: if isSignedIn() && (request.auth.uid == userId || hasRole('MUNICIPAL_COMMISSIONER'));
+      allow write: if isSignedIn() && request.auth.uid == userId;
     }
 
+    // Operational collections read access for all staff
     match /kpi_snapshots/{id} {
       allow read: if isSignedIn();
       allow create: if isSignedIn();
-      allow update, delete: if hasRole('MUNICIPAL_COMMISSIONER');
+      allow update: if isSignedIn();
     }
 
     match /alerts/{id} {
       allow read: if isSignedIn();
-      allow create: if isSignedIn(); 
-      allow update: if isSignedIn(); 
-      allow delete: if hasRole('MUNICIPAL_COMMISSIONER');
+      allow write: if isSignedIn();
     }
 
     match /tasks/{id} {
       allow read: if isSignedIn();
-      allow create: if hasRole('MUNICIPAL_COMMISSIONER') || hasRole('ZONAL_OFFICER');
-      allow update: if isSignedIn();
-      allow delete: if hasRole('MUNICIPAL_COMMISSIONER');
+      allow write: if isSignedIn();
+    }
+
+    match /gfc_indicators/{id} {
+      allow read: if isSignedIn();
+      allow write: if isSignedIn();
+    }
+
+    match /notifications/{id} {
+      allow read: if isSignedIn() && resource.data.userId == request.auth.uid;
+      allow write: if isSignedIn();
     }
 
     match /wards/{id} {
-      allow read: if true; 
-      allow write: if hasRole('MUNICIPAL_COMMISSIONER');
+      allow read: if isSignedIn();
+      allow write: if isSignedIn();
     }
 
     match /zones/{id} {
-      allow read: if true;
-      allow write: if hasRole('MUNICIPAL_COMMISSIONER');
+      allow read: if isSignedIn();
+      allow write: if isSignedIn();
     }
 
-    // AI Predictive Analytics Log
-    match /predictive_insights/{id} {
+    match /summaries/{id} {
       allow read: if isSignedIn();
-      allow write: if false; // System generated only via Service/Function
+      allow write: if isSignedIn();
+    }
+
+    match /predictive_alerts/{id} {
+      allow read: if isSignedIn();
+    }
+
+    match /reports/{id} {
+      allow read: if isSignedIn();
+      allow write: if isSignedIn();
+    }
+
+    match /posts/{id} {
+      allow read: if isSignedIn();
+      allow create: if isSignedIn();
+      allow update, delete: if isSignedIn() && resource.data.authorId == request.auth.uid;
+    }
+    
+    match /citizen_reports/{id} {
+      allow create: if true;
+      allow read: if isSignedIn();
+      allow update: if isSignedIn();
     }
   }
 }
