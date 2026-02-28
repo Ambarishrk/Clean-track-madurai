@@ -83,11 +83,12 @@ export default function WardsPage() {
   );
 }
 
-const MOCK_WARDS: Partial<Ward>[] = Array.from({ length: 10 }, (_, i) => ({
+const MOCK_WARDS: Ward[] = Array.from({ length: 10 }, (_, i) => ({
   id: `w${i+1}`,
   wardId: `W${(i+1).toString().padStart(3, '0')}`,
   wardName: `Ward Area ${i+1}`,
   zoneId: `Z${Math.floor(i/25) + 1}`,
   population: Math.floor(Math.random() * 20000) + 10000,
   householdCount: Math.floor(Math.random() * 5000) + 2000,
+  createdAt: Date.now(),
 }));
