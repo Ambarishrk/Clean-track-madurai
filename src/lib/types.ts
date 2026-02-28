@@ -189,3 +189,51 @@ export interface Post {
   likesCount?: number;
   commentsCount?: number;
 }
+
+// --- NEW SMART CITY AI & CITIZEN TYPES ---
+
+export type CitizenReportStatus = 'pending' | 'verified' | 'dispatched' | 'resolved';
+export type CitizenReportType = 'garbage_overflow' | 'clogged_drain' | 'unauthorized_dump' | 'other';
+
+export interface CitizenReport {
+  id: string;
+  type: CitizenReportType;
+  description: string;
+  photoURL?: string | null;
+  location?: { lat: number; lng: number };
+  address?: string;
+  wardId: string;
+  zoneId: string;
+  status: CitizenReportStatus;
+  reportedAt: number;
+  reportedBy: string; // uid or 'anonymous'
+  resolutionNotes?: string;
+}
+
+export interface IntelligenceSummary {
+  id: string; // 'city' | zoneId | wardId
+  entityType: 'city' | 'zone' | 'ward';
+  healthScore: number; // 0-100 dynamic cleanliness score
+  activeAlerts: number;
+  openTasks: number;
+  citizenSatisfaction: number; // 0-5
+  predictedRisk: 'low' | 'medium' | 'high';
+  kpiAverages: {
+    segregation: number;
+    d2d: number;
+    hygiene: number;
+    processing: number;
+  };
+  lastAggregated: number;
+}
+
+export interface PredictiveInsight {
+  id: string;
+  wardId: string;
+  predictionType: 'surge' | 'overflow' | 'staffing_gap';
+  confidence: number;
+  description: string;
+  recommendedAction: string;
+  validUntil: number;
+  createdAt: number;
+}

@@ -5,10 +5,10 @@ import { useUser, useAuth, useDoc, useMemoFirebase, useFirestore } from '@/fireb
 import { signOut } from 'firebase/auth';
 import { Button } from '@/components/ui/button';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { 
-  DropdownMenu, 
-  DropdownMenuContent, 
-  DropdownMenuItem, 
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
   DropdownMenuTrigger,
   DropdownMenuSeparator
 } from '@/components/ui/dropdown-menu';
@@ -71,10 +71,10 @@ export default function Navbar() {
                     Alerts
                   </Button>
                 </Link>
-                <Link href="/gfc-tracker">
+                <Link href="/map">
                   <Button variant="ghost" size="sm" className="gap-2 font-bold text-xs">
-                    <BarChart3 className="h-4 w-4" />
-                    GFC
+                    <Map className="h-4 w-4" />
+                    Digital Twin
                   </Button>
                 </Link>
                 {isCommissioner && (
@@ -82,7 +82,7 @@ export default function Navbar() {
                     <Link href="/reports">
                       <Button variant="ghost" size="sm" className="gap-2 font-bold text-xs">
                         <FileText className="h-4 w-4" />
-                        Reports
+                        Intelligence Reports
                       </Button>
                     </Link>
                   </>
@@ -154,11 +154,18 @@ export default function Navbar() {
               </DropdownMenu>
             </>
           ) : (
-            <Link href="/login">
-              <Button className="font-bold rounded-lg px-6 shadow-lg shadow-primary/20">
-                Staff Login
-              </Button>
-            </Link>
+            <div className="flex items-center gap-2">
+              <Link href="/citizen-report">
+                <Button variant="outline" className="font-black h-9 rounded-xl border-primary/20 text-primary uppercase italic text-[10px] tracking-tighter hover:bg-primary/5">
+                  Public Portal
+                </Button>
+              </Link>
+              <Link href="/login">
+                <Button className="font-black h-9 rounded-xl px-6 shadow-lg shadow-primary/20 uppercase italic text-[10px] tracking-tighter">
+                  Staff Login
+                </Button>
+              </Link>
+            </div>
           )}
         </div>
       </div>

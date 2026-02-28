@@ -1,19 +1,24 @@
 'use client';
 
 import { useCollection, useMemoFirebase, useFirestore, useUser, useDoc } from '@/firebase';
-import { collection, query, orderBy, doc } from 'firebase/firestore';
+import { collection, query, orderBy, doc, addDoc } from 'firebase/firestore';
 import { Report, UserProfile } from '@/lib/types';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { FileText, Download, Calendar, Filter, FileBarChart, ShieldAlert } from 'lucide-react';
+import { FileText, Download, Calendar, Filter, FileBarChart, ShieldAlert, Zap } from 'lucide-react';
 import { format } from 'date-fns';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { useRouter } from 'next/navigation';
+import { aiService } from '@/lib/services/aiService';
+import { useToast } from '@/hooks/use-toast';
+import { useState } from 'react';
 
 export default function ReportsPage() {
   const db = useFirestore();
   const router = useRouter();
   const { user } = useUser();
+  const { toast } = useToast();
+  const [isGenerating, setIsGenerating] = useState(false);
 
   const profileRef = useMemoFirebase(() => {
     if (!db || !user?.uid) return null;
@@ -28,6 +33,19 @@ export default function ReportsPage() {
   }, [db]);
 
   const { data: reports, isLoading } = useCollection<Report>(reportsQuery);
+
+  const handleGenerateAIReport = async () => {
+    if (!db) return;
+    setIsGenerating(true);
+    try {
+      await aiService.generateMunicipalReport(db, `Strategic Analysis: ${format(new Date(), 'MMMM yyyy')}`);
+      toast({ title: "Analysis Complete", description: "The AI Municipal Report has been generated and added to your feed." });
+    } catch (error) {
+      toast({ variant: "destructive", title: "Generation Failed", description: "AI Engine is currently overloaded. Please try again." });
+    } finally {
+      setIsGenerating(false);
+    }
+  };
 
   if (currentUserProfile && currentUserProfile.role !== 'MUNICIPAL_COMMISSIONER') {
     return (
@@ -48,7 +66,15 @@ export default function ReportsPage() {
           <p className="text-white/50 font-bold tracking-widest text-xs uppercase">Official Governance Documentation | Madurai MMC</p>
         </div>
         <div className="flex gap-3 z-10">
-          <Button variant="outline" className="bg-white/10 border-white/20 text-white font-bold rounded-xl gap-2 hover:bg-white/20">
+          <Button
+            onClick={handleGenerateAIReport}
+            disabled={isGenerating}
+            className="rounded-xl font-black uppercase italic tracking-tighter h-12 px-8 bg-primary hover:bg-primary/90 gap-2 shadow-2xl shadow-primary/20"
+          >
+            <Zap className={`h-4 w-4 ${isGenerating ? 'animate-pulse' : ''}`} />
+            {isGenerating ? 'Analyzing...' : 'Generate AI Analysis'}
+          </Button>
+          <Button variant="outline" className="bg-white/10 border-white/20 text-white font-black uppercase italic tracking-tighter h-12 px-8 rounded-xl gap-2 hover:bg-white/20">
             <Filter className="h-4 w-4" />
             Custom Builder
           </Button>
@@ -58,13 +84,13 @@ export default function ReportsPage() {
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {isLoading ? (
-          [1, 2, 3].map(i => <Card key={i} className="h-48 animate-pulse bg-slate-100 rounded-[2rem]" />)
+          [1, 2, 3].map(i => <Card key={i} className="h-48 animate-pulse bg-slate-100 rounded-[2.5rem] border-none shadow-none" />)
         ) : reports?.length === 0 ? (
           <div className="col-span-full py-20 text-center text-muted-foreground italic">
             No system reports generated yet.
           </div>
         ) : reports?.map((report) => (
-          <Card key={report.id} className="border-none shadow-xl rounded-[2rem] hover:shadow-2xl transition-all group overflow-hidden bg-white">
+          <Card key={report.id} className="border-none shadow-xl rounded-[2.5rem] hover:shadow-2xl transition-all group overflow-hidden bg-white">
             <CardHeader className="bg-slate-50/50 pb-4">
               <div className="flex justify-between items-start">
                 <Badge variant="outline" className="font-black text-[9px] uppercase tracking-widest border-primary/20 text-primary">
@@ -74,18 +100,18 @@ export default function ReportsPage() {
                   <FileText className="h-5 w-5 text-primary" />
                 </div>
               </div>
-              <CardTitle className="text-lg font-black mt-4 leading-tight group-hover:text-primary transition-colors">
+              <CardTitle className="text-lg font-black mt-4 leading-tight group-hover:text-primary transition-colors uppercase italic tracking-tighter">
                 {report.title}
               </CardTitle>
             </CardHeader>
-            <CardContent className="pt-2">
+            <CardContent className="pt-6">
               <div className="flex items-center gap-2 text-[10px] font-bold text-muted-foreground uppercase tracking-widest mb-6">
                 <Calendar className="h-3 w-3" />
                 Generated {format(report.generatedAt, 'MMM dd, yyyy')}
               </div>
               <Button className="w-full rounded-2xl h-12 font-black uppercase tracking-tighter italic gap-2 shadow-lg shadow-primary/20">
                 <Download className="h-4 w-4" />
-                Download PDF
+                Download Analysis
               </Button>
             </CardContent>
           </Card>
