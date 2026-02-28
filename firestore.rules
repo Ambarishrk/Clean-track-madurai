@@ -5,8 +5,9 @@ service cloud.firestore {
     /**
      * CLEAN-TRACK SECURITY RULES
      * 
-     * Simplified for prototyping to allow list operations for signed-in users,
-     * while maintaining role-based write access and scoped ownership.
+     * Optimized for municipal staff collaboration. 
+     * Allows all authenticated staff to read operational metrics (KPIs, Alerts, Tasks, GFC).
+     * Restricts destructive actions and administrative changes to the Commissioner.
      */
 
     // --- HELPER FUNCTIONS ---
@@ -19,34 +20,37 @@ service cloud.firestore {
       return isSignedIn() && request.auth.uid == userId;
     }
 
-    // Safely check user role from the users collection
-    function getUserRole() {
-      return get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role;
+    // Safely check user role - returns null if doc doesn't exist
+    function getUserData() {
+      return get(/databases/$(database)/documents/users/$(request.auth.uid)).data;
     }
 
     function isCommissioner() {
-      return isSignedIn() && getUserRole() == 'MUNICIPAL_COMMISSIONER';
+      let data = getUserData();
+      return isSignedIn() && data != null && data.role == 'MUNICIPAL_COMMISSIONER';
     }
 
     // --- COLLECTION RULES ---
 
     // User profiles
     match /users/{userId} {
-      allow get, create: if isOwner(userId) || isSignedIn(); // Allow reading profiles for UI display
-      allow list: if isSignedIn(); 
+      allow get: if isSignedIn();
+      allow list: if isSignedIn();
+      allow create: if isOwner(userId);
       allow update: if isOwner(userId) || isCommissioner();
       allow delete: if isCommissioner();
     }
 
-    // Notifications (Top-level collection as used in the code)
+    // Notifications
     match /notifications/{notifId} {
-      allow get, list: if isSignedIn() && (resource.data.userId == request.auth.uid || isCommissioner());
-      allow create: if isSignedIn(); // System or other users can notify
+      // Users can see their own notifications. Commissioner can see system-wide logs.
+      allow read: if isSignedIn() && (resource.data.userId == request.auth.uid || isCommissioner());
+      allow create: if isSignedIn();
       allow update: if isSignedIn() && (resource.data.userId == request.auth.uid);
       allow delete: if isSignedIn() && (resource.data.userId == request.auth.uid || isCommissioner());
     }
 
-    // Administrative Boundaries
+    // Administrative Boundaries (Static metadata)
     match /wards/{wardId} {
       allow read: if isSignedIn();
       allow write: if isCommissioner();
@@ -57,20 +61,19 @@ service cloud.firestore {
       allow write: if isCommissioner();
     }
 
-    // Operational Data (KPIs, Alerts, Tasks, GFC)
-    // For prototyping, we allow 'read' for all authenticated staff.
-    // Writes are restricted by role.
+    // Operational Data
+    // We allow 'read' (get/list) for all authenticated staff to support the unified command center.
     
     match /kpi_snapshots/{id} {
       allow read: if isSignedIn();
-      allow create: if isSignedIn(); // Supervisors and Commissioner
+      allow create: if isSignedIn();
       allow update, delete: if isCommissioner();
     }
 
     match /alerts/{id} {
       allow read: if isSignedIn();
       allow create: if isSignedIn(); 
-      allow update: if isSignedIn(); // Allow resolving
+      allow update: if isSignedIn(); // Allow resolving alerts
       allow delete: if isCommissioner();
     }
 
@@ -106,7 +109,8 @@ service cloud.firestore {
     match /posts/{id} {
       allow read: if isSignedIn();
       allow create: if isSignedIn();
-      allow update, delete: if isSignedIn() && (resource.data.authorId == request.auth.uid || isCommissioner());
+      allow update: if isSignedIn() && (resource.data.authorId == request.auth.uid || isCommissioner());
+      allow delete: if isSignedIn() && (resource.data.authorId == request.auth.uid || isCommissioner());
     }
   }
 }
