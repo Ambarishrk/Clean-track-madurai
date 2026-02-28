@@ -1,10 +1,10 @@
 'use client';
 
 import { useState } from 'react';
-import { 
-  signInWithEmailAndPassword, 
-  signInWithPopup, 
-  GoogleAuthProvider 
+import {
+  signInWithEmailAndPassword,
+  signInWithPopup,
+  GoogleAuthProvider
 } from 'firebase/auth';
 import { useAuth } from '@/firebase';
 import { useRouter } from 'next/navigation';
@@ -50,16 +50,16 @@ export default function LoginPage() {
     } catch (error: any) {
       console.error(error);
       let description = error.message;
-      
+
       if (error.code === 'auth/operation-not-allowed') {
         description = "Google Sign-In is not enabled in the Firebase Console. Go to Authentication > Sign-in method to enable it.";
       } else if (error.code === 'auth/popup-blocked') {
         description = "The login popup was blocked by your browser. Please allow popups for this site in your browser settings and try again.";
       }
-      
-      toast({ 
-        title: "Google Auth Failed", 
-        description, 
+
+      toast({
+        title: "Google Auth Failed",
+        description,
         variant: "destructive",
       });
     } finally {
@@ -107,9 +107,42 @@ export default function LoginPage() {
                 required
               />
             </div>
-            <Button 
-              type="submit" 
-              className="w-full h-12 rounded-xl font-bold shadow-lg shadow-primary/20 hover:scale-[1.01] transition-transform" 
+            <div className="flex flex-col gap-2 pt-2">
+              <span className="text-[10px] font-bold uppercase text-muted-foreground tracking-widest text-center">Quick Role Login</span>
+              <div className="flex gap-2">
+                <Button
+                  type="button"
+                  variant="secondary"
+                  size="sm"
+                  className="w-full text-[10px] py-1 h-8 rounded-lg"
+                  onClick={() => { setEmail('commissioner@cleantrack.in'); setPassword('password123'); }}
+                >
+                  Commissioner
+                </Button>
+                <Button
+                  type="button"
+                  variant="secondary"
+                  size="sm"
+                  className="w-full text-[10px] py-1 h-8 rounded-lg"
+                  onClick={() => { setEmail('north@cleantrack.in'); setPassword('password123'); }}
+                >
+                  Zonal
+                </Button>
+                <Button
+                  type="button"
+                  variant="secondary"
+                  size="sm"
+                  className="w-full text-[10px] py-1 h-8 rounded-lg"
+                  onClick={() => { setEmail('ward1@cleantrack.in'); setPassword('password123'); }}
+                >
+                  Ward
+                </Button>
+              </div>
+            </div>
+
+            <Button
+              type="submit"
+              className="w-full h-12 mt-2 rounded-xl font-bold shadow-lg shadow-primary/20 hover:scale-[1.01] transition-transform"
               disabled={isLoading}
             >
               {isLoading ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : null}
@@ -124,8 +157,8 @@ export default function LoginPage() {
           </div>
 
           <div className="space-y-2">
-            <Button 
-              variant="outline" 
+            <Button
+              variant="outline"
               className="w-full h-12 rounded-xl bg-white border-slate-200 flex items-center justify-center gap-3 font-bold hover:bg-slate-50"
               onClick={handleGoogleSignIn}
               disabled={isLoading}
@@ -138,9 +171,9 @@ export default function LoginPage() {
               </svg>
               Staff SSO
             </Button>
-            
-            <Button 
-              variant="ghost" 
+
+            <Button
+              variant="ghost"
               className="w-full h-12 rounded-xl flex items-center justify-center gap-2 font-black uppercase text-[10px] tracking-widest text-primary hover:bg-primary/5"
               onClick={() => router.push('/signup')}
             >
