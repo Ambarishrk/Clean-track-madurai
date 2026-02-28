@@ -1,15 +1,16 @@
-
 'use client';
 
 import { KPICard } from './KPICard';
 import { WardHeatmap } from './WardHeatmap';
 import { GFCScoreRing } from './GFCScoreRing';
 import { AlertsFeed } from './AlertsFeed';
+import { RecentNotifications } from '@/components/features/notifications/RecentNotifications';
 import { PredictiveWarnings } from './PredictiveWarnings';
 import { useCollection, useMemoFirebase } from '@/firebase';
 import { collection, query, limit, orderBy } from 'firebase/firestore';
 import { useFirestore } from '@/firebase';
 import { KpiSnapshot } from '@/lib/types';
+import { Bell, AlertCircle } from 'lucide-react';
 
 export function CommissionerDashboard() {
   const db = useFirestore();
@@ -33,12 +34,12 @@ export function CommissionerDashboard() {
     <div className="container mx-auto p-6 space-y-8">
       <header className="flex justify-between items-end">
         <div>
-          <h1 className="text-3xl font-bold text-primary">City Operations Command</h1>
-          <p className="text-muted-foreground">Madurai Municipal Corporation | City-Wide Overview</p>
+          <h1 className="text-3xl font-black text-primary uppercase italic tracking-tighter">City Operations Command</h1>
+          <p className="text-muted-foreground font-bold text-xs uppercase tracking-widest">Madurai Municipal Corporation | City-Wide Overview</p>
         </div>
         <div className="text-right">
-          <span className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">Last Updated</span>
-          <p className="font-mono text-sm">Just now</p>
+          <span className="text-[10px] font-black uppercase tracking-wider text-muted-foreground">Live Sync</span>
+          <p className="font-mono text-sm font-bold text-primary">Active</p>
         </div>
       </header>
 
@@ -51,29 +52,40 @@ export function CommissionerDashboard() {
 
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
         <div className="lg:col-span-8 space-y-8">
-          <section className="bg-card p-6 rounded-xl border shadow-sm">
-            <h2 className="text-xl font-bold mb-4">Ward Performance Heatmap</h2>
+          <section className="bg-white p-8 rounded-[2rem] border shadow-xl">
+            <h2 className="text-xl font-black mb-6 uppercase italic tracking-tight text-slate-800">Ward Performance Heatmap</h2>
             <WardHeatmap />
           </section>
           
-          <section className="bg-card p-6 rounded-xl border shadow-sm">
-            <h2 className="text-xl font-bold mb-4">Predictive Surge Warnings</h2>
+          <section className="bg-white p-8 rounded-[2rem] border shadow-xl">
+            <h2 className="text-xl font-black mb-6 uppercase italic tracking-tight text-slate-800">Predictive Surge Warnings</h2>
             <PredictiveWarnings />
           </section>
         </div>
 
         <div className="lg:col-span-4 space-y-8">
-          <section className="bg-card p-6 rounded-xl border shadow-sm flex flex-col items-center text-center">
-            <h2 className="text-xl font-bold mb-4">GFC Readiness Score</h2>
+          <section className="bg-white p-8 rounded-[2rem] border shadow-xl flex flex-col items-center text-center">
+            <h2 className="text-xl font-black mb-6 uppercase italic tracking-tight text-slate-800">GFC Readiness Score</h2>
             <GFCScoreRing score={74} />
-            <p className="mt-4 text-sm text-muted-foreground">
+            <p className="mt-6 text-xs text-muted-foreground font-medium leading-relaxed">
               Based on 49 MoHUA indicators. 
-              <br />Targeting 3-Star Certification.
+              <br /><span className="font-bold text-primary">Targeting 3-Star Certification.</span>
             </p>
           </section>
 
-          <section className="bg-card p-6 rounded-xl border shadow-sm">
-            <h2 className="text-xl font-bold mb-4">Live Alerts</h2>
+          <section className="bg-white p-6 rounded-[2rem] border shadow-xl">
+            <h2 className="text-sm font-black mb-4 uppercase tracking-widest text-primary flex items-center gap-2">
+              <Bell className="h-4 w-4" />
+              Recent Updates
+            </h2>
+            <RecentNotifications />
+          </section>
+
+          <section className="bg-white p-6 rounded-[2rem] border shadow-xl">
+            <h2 className="text-sm font-black mb-4 uppercase tracking-widest text-destructive flex items-center gap-2">
+              <AlertCircle className="h-4 w-4" />
+              System Alerts
+            </h2>
             <AlertsFeed />
           </section>
         </div>

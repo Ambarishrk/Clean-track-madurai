@@ -1,4 +1,3 @@
-
 'use client';
 
 import { useState } from 'react';
@@ -11,7 +10,8 @@ import { addDocumentNonBlocking } from '@/firebase';
 import { collection } from 'firebase/firestore';
 import { useFirestore, useUser } from '@/firebase';
 import { getKpiStatus } from '@/lib/utils/sanitation';
-import { Loader2, Camera, Send, FileCheck, ShieldAlert } from 'lucide-react';
+import { Loader2, Camera, Send, FileCheck, ShieldAlert, Bell } from 'lucide-react';
+import { RecentNotifications } from '@/components/features/notifications/RecentNotifications';
 
 export function WardDashboard({ wardId }: { wardId: string }) {
   const db = useFirestore();
@@ -56,108 +56,122 @@ export function WardDashboard({ wardId }: { wardId: string }) {
   };
 
   return (
-    <div className="container mx-auto p-6 max-w-2xl space-y-8">
-      <header className="flex items-center gap-4 bg-slate-900 p-8 rounded-[2rem] text-white shadow-2xl relative overflow-hidden">
-        <div className="h-16 w-16 bg-primary rounded-2xl flex items-center justify-center shadow-lg">
-          <FileCheck className="h-8 w-8 text-white" />
+    <div className="container mx-auto p-6 max-w-5xl">
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        <div className="lg:col-span-2 space-y-8">
+          <header className="flex items-center gap-4 bg-slate-900 p-8 rounded-[2rem] text-white shadow-2xl relative overflow-hidden">
+            <div className="h-16 w-16 bg-primary rounded-2xl flex items-center justify-center shadow-lg">
+              <FileCheck className="h-8 w-8 text-white" />
+            </div>
+            <div>
+              <h2 className="text-2xl font-black uppercase italic">Ward Command</h2>
+              <p className="text-white/50 font-bold tracking-widest text-[10px] uppercase">Daily SBM 2.0 Field Submission | Ward {wardId}</p>
+            </div>
+            <div className="absolute top-0 right-0 p-8 opacity-10"><ShieldAlert className="h-24 w-24" /></div>
+          </header>
+
+          <Card className="border-none shadow-2xl rounded-[2rem] bg-white overflow-hidden">
+            <CardHeader className="bg-slate-50 pb-10 pt-10 px-10">
+              <CardTitle className="text-xl font-black text-slate-800 flex items-center justify-between">
+                Field Audit Entry
+                <div className="text-[10px] font-black bg-primary text-white px-3 py-1 rounded-full uppercase tracking-widest shadow-lg shadow-primary/20">
+                  Live Feed
+                </div>
+              </CardTitle>
+              <p className="text-slate-500 font-medium text-sm">Please verify all onsite evidence before submitting to Commissioner.</p>
+            </CardHeader>
+            <CardContent className="p-10">
+              <form onSubmit={handleSubmit} className="space-y-8">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
+                  <div className="space-y-3">
+                    <Label htmlFor="seg" className="text-[10px] font-black uppercase tracking-widest text-slate-400">Household Segregation (%)</Label>
+                    <Input 
+                      id="seg" 
+                      type="number" 
+                      min="0" 
+                      max="100" 
+                      value={formData.segregationRate} 
+                      onChange={(e) => setFormData({...formData, segregationRate: parseInt(e.target.value)})}
+                      className="rounded-2xl h-14 bg-slate-50 border-none text-lg font-bold focus:ring-primary/20 shadow-inner"
+                    />
+                  </div>
+                  <div className="space-y-3">
+                    <Label htmlFor="d2d" className="text-[10px] font-black uppercase tracking-widest text-slate-400">D2D Collection Coverage (%)</Label>
+                    <Input 
+                      id="d2d" 
+                      type="number" 
+                      min="0" 
+                      max="100" 
+                      value={formData.d2dCoverageRate} 
+                      onChange={(e) => setFormData({...formData, d2dCoverageRate: parseInt(e.target.value)})}
+                      className="rounded-2xl h-14 bg-slate-50 border-none text-lg font-bold focus:ring-primary/20 shadow-inner"
+                    />
+                  </div>
+                  <div className="space-y-3">
+                    <Label htmlFor="hyg" className="text-[10px] font-black uppercase tracking-widest text-slate-400">Toilet Hygiene Score (0-100)</Label>
+                    <Input 
+                      id="hyg" 
+                      type="number" 
+                      min="0" 
+                      max="100" 
+                      value={formData.toiletHygieneScore} 
+                      onChange={(e) => setFormData({...formData, toiletHygieneScore: parseInt(e.target.value)})}
+                      className="rounded-2xl h-14 bg-slate-50 border-none text-lg font-bold focus:ring-primary/20 shadow-inner"
+                    />
+                  </div>
+                  <div className="space-y-3">
+                    <Label htmlFor="proc" className="text-[10px] font-black uppercase tracking-widest text-slate-400">Waste Processing Rate (%)</Label>
+                    <Input 
+                      id="proc" 
+                      type="number" 
+                      min="0" 
+                      max="100" 
+                      value={formData.wasteProcessingRate} 
+                      onChange={(e) => setFormData({...formData, wasteProcessingRate: parseInt(e.target.value)})}
+                      className="rounded-2xl h-14 bg-slate-50 border-none text-lg font-bold focus:ring-primary/20 shadow-inner"
+                    />
+                  </div>
+                </div>
+
+                <div className="p-10 border-4 border-dashed rounded-[2rem] bg-slate-50 border-slate-200 flex flex-col items-center justify-center text-center gap-4 cursor-pointer hover:bg-slate-100 transition-all group">
+                  <div className="h-16 w-16 bg-white rounded-2xl flex items-center justify-center shadow-md group-hover:scale-110 transition-transform">
+                    <Camera className="h-8 w-8 text-primary" />
+                  </div>
+                  <div>
+                    <p className="font-black text-slate-800 uppercase text-sm tracking-tighter">Attach Field Evidence</p>
+                    <p className="text-[10px] text-slate-400 font-bold uppercase tracking-widest">JPG/PNG | Max 10MB | SBM 2.0 Compliant</p>
+                  </div>
+                </div>
+
+                <Button 
+                  type="submit" 
+                  className="w-full h-16 text-xl font-black rounded-2xl shadow-2xl shadow-primary/30 transition-all hover:scale-[1.01] bg-primary italic uppercase tracking-tighter"
+                  disabled={isSubmitting}
+                >
+                  {isSubmitting ? <Loader2 className="animate-spin mr-2" /> : <Send className="mr-3 h-6 w-6" />}
+                  Dispatch Daily Audit
+                </Button>
+              </form>
+            </CardContent>
+          </Card>
+          
+          <div className="bg-amber-50 border border-amber-100 p-6 rounded-3xl flex gap-4 items-start">
+            <ShieldAlert className="h-6 w-6 text-amber-600 shrink-0" />
+            <div>
+              <p className="text-sm font-black text-amber-900 uppercase tracking-tighter">Attestation Required</p>
+              <p className="text-xs text-amber-700 font-medium leading-relaxed">By submitting this data, you certify that the metrics reported are based on physical field inspection as per Madurai Municipal Corporation guidelines.</p>
+            </div>
+          </div>
         </div>
-        <div>
-          <h2 className="text-2xl font-black uppercase italic">Ward Command</h2>
-          <p className="text-white/50 font-bold tracking-widest text-[10px] uppercase">Daily SBM 2.0 Field Submission | Ward {wardId}</p>
-        </div>
-        <div className="absolute top-0 right-0 p-8 opacity-10"><ShieldAlert className="h-24 w-24" /></div>
-      </header>
 
-      <Card className="border-none shadow-2xl rounded-[2rem] bg-white overflow-hidden">
-        <CardHeader className="bg-slate-50 pb-10 pt-10 px-10">
-          <CardTitle className="text-xl font-black text-slate-800 flex items-center justify-between">
-            Field Audit Entry
-            <div className="text-[10px] font-black bg-primary text-white px-3 py-1 rounded-full uppercase tracking-widest shadow-lg shadow-primary/20">
-              Live Feed
-            </div>
-          </CardTitle>
-          <p className="text-slate-500 font-medium text-sm">Please verify all onsite evidence before submitting to Commissioner.</p>
-        </CardHeader>
-        <CardContent className="p-10">
-          <form onSubmit={handleSubmit} className="space-y-8">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
-              <div className="space-y-3">
-                <Label htmlFor="seg" className="text-[10px] font-black uppercase tracking-widest text-slate-400">Household Segregation (%)</Label>
-                <Input 
-                  id="seg" 
-                  type="number" 
-                  min="0" 
-                  max="100" 
-                  value={formData.segregationRate} 
-                  onChange={(e) => setFormData({...formData, segregationRate: parseInt(e.target.value)})}
-                  className="rounded-2xl h-14 bg-slate-50 border-none text-lg font-bold focus:ring-primary/20 shadow-inner"
-                />
-              </div>
-              <div className="space-y-3">
-                <Label htmlFor="d2d" className="text-[10px] font-black uppercase tracking-widest text-slate-400">D2D Collection Coverage (%)</Label>
-                <Input 
-                  id="d2d" 
-                  type="number" 
-                  min="0" 
-                  max="100" 
-                  value={formData.d2dCoverageRate} 
-                  onChange={(e) => setFormData({...formData, d2dCoverageRate: parseInt(e.target.value)})}
-                  className="rounded-2xl h-14 bg-slate-50 border-none text-lg font-bold focus:ring-primary/20 shadow-inner"
-                />
-              </div>
-              <div className="space-y-3">
-                <Label htmlFor="hyg" className="text-[10px] font-black uppercase tracking-widest text-slate-400">Toilet Hygiene Score (0-100)</Label>
-                <Input 
-                  id="hyg" 
-                  type="number" 
-                  min="0" 
-                  max="100" 
-                  value={formData.toiletHygieneScore} 
-                  onChange={(e) => setFormData({...formData, toiletHygieneScore: parseInt(e.target.value)})}
-                  className="rounded-2xl h-14 bg-slate-50 border-none text-lg font-bold focus:ring-primary/20 shadow-inner"
-                />
-              </div>
-              <div className="space-y-3">
-                <Label htmlFor="proc" className="text-[10px] font-black uppercase tracking-widest text-slate-400">Waste Processing Rate (%)</Label>
-                <Input 
-                  id="proc" 
-                  type="number" 
-                  min="0" 
-                  max="100" 
-                  value={formData.wasteProcessingRate} 
-                  onChange={(e) => setFormData({...formData, wasteProcessingRate: parseInt(e.target.value)})}
-                  className="rounded-2xl h-14 bg-slate-50 border-none text-lg font-bold focus:ring-primary/20 shadow-inner"
-                />
-              </div>
-            </div>
-
-            <div className="p-10 border-4 border-dashed rounded-[2rem] bg-slate-50 border-slate-200 flex flex-col items-center justify-center text-center gap-4 cursor-pointer hover:bg-slate-100 transition-all group">
-              <div className="h-16 w-16 bg-white rounded-2xl flex items-center justify-center shadow-md group-hover:scale-110 transition-transform">
-                <Camera className="h-8 w-8 text-primary" />
-              </div>
-              <div>
-                <p className="font-black text-slate-800 uppercase text-sm tracking-tighter">Attach Field Evidence</p>
-                <p className="text-[10px] text-slate-400 font-bold uppercase tracking-widest">JPG/PNG | Max 10MB | SBM 2.0 Compliant</p>
-              </div>
-            </div>
-
-            <Button 
-              type="submit" 
-              className="w-full h-16 text-xl font-black rounded-2xl shadow-2xl shadow-primary/30 transition-all hover:scale-[1.01] bg-primary italic uppercase tracking-tighter"
-              disabled={isSubmitting}
-            >
-              {isSubmitting ? <Loader2 className="animate-spin mr-2" /> : <Send className="mr-3 h-6 w-6" />}
-              Dispatch Daily Audit
-            </Button>
-          </form>
-        </CardContent>
-      </Card>
-      
-      <div className="bg-amber-50 border border-amber-100 p-6 rounded-3xl flex gap-4 items-start">
-        <ShieldAlert className="h-6 w-6 text-amber-600 shrink-0" />
-        <div>
-          <p className="text-sm font-black text-amber-900 uppercase tracking-tighter">Attestation Required</p>
-          <p className="text-xs text-amber-700 font-medium leading-relaxed">By submitting this data, you certify that the metrics reported are based on physical field inspection as per Madurai Municipal Corporation guidelines.</p>
+        <div className="lg:col-span-1 space-y-6">
+          <section className="bg-white p-6 rounded-[2rem] border shadow-xl">
+            <h2 className="text-sm font-black mb-4 uppercase tracking-widest text-primary flex items-center gap-2">
+              <Bell className="h-4 w-4" />
+              Notifications
+            </h2>
+            <RecentNotifications />
+          </section>
         </div>
       </div>
     </div>

@@ -1,4 +1,3 @@
-
 'use client';
 
 import Link from 'next/link';
@@ -16,11 +15,13 @@ import {
 import { LogOut, User, Home, ShieldCheck, CheckSquare, Bell, BarChart3, Users, Map, AlertTriangle, FileText } from 'lucide-react';
 import { doc } from 'firebase/firestore';
 import { UserProfile } from '@/lib/types';
+import { useUnreadCount } from '@/hooks/useNotifications';
 
 export default function Navbar() {
   const { user } = useUser();
   const auth = useAuth();
   const db = useFirestore();
+  const unreadCount = useUnreadCount(user?.uid || '');
 
   const profileRef = useMemoFirebase(() => {
     if (!db || !user?.uid) return null;
@@ -91,7 +92,11 @@ export default function Navbar() {
               <Link href="/notifications">
                 <Button variant="ghost" size="icon" className="relative h-9 w-9">
                   <Bell className="h-5 w-5" />
-                  <span className="absolute top-2 right-2 h-2 w-2 bg-red-500 rounded-full border-2 border-white" />
+                  {unreadCount > 0 && (
+                    <span className="absolute -top-1 -right-1 h-5 w-5 bg-red-600 text-[10px] font-black text-white rounded-full flex items-center justify-center border-2 border-white">
+                      {unreadCount > 9 ? '9+' : unreadCount}
+                    </span>
+                  )}
                 </Button>
               </Link>
 
