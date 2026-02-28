@@ -1,0 +1,116 @@
+﻿src/app/gfc-tracker/page.tsx(119,40): error TS2345: Argument of type 'GfcStatus | undefined' is not assignable to parameter of type 'GfcStatus'.
+  Type 'undefined' is not assignable to type 'GfcStatus'.
+src/app/reports/page.tsx(6,10): error TS2305: Module '"@/lib/types"' has no exported member 'Report'.
+src/app/wards/page.tsx(60,81): error TS2339: Property 'wardId' does not exist on type 'Partial<Ward>'.
+src/components/features/dashboard/PredictiveWarnings.tsx(7,10): error TS2305: Module '"@/lib/types"' has no exported member 'PredictiveAlert'.
+src/components/posts/PostCard.tsx(4,10): error TS2305: Module '"@/lib/types"' has no exported member 'Post'.
+src/components/ui/calendar.tsx(57,9): error TS2353: Object literal may only specify known properties, and 'IconLeft' does not exist in type 'Partial<CustomComponents>'.
+src/components/ui/calendar.tsx(57,22): error TS7031: Binding element 'className' implicitly has an 'any' type.
+src/components/ui/calendar.tsx(60,23): error TS7031: Binding element 'className' implicitly has an 'any' type.
+src/firebase/provider.tsx(6,10): error TS2305: Module '"firebase/storage"' has no exported member 'Storage'.
+src/lib/services/postService.ts(15,10): error TS2305: Module '"@/lib/types"' has no exported member 'Post'.
+src/lib/services/storageService.ts(6,3): error TS2305: Module '"firebase/storage"' has no exported member 'Storage'.
+src/lib/services/storageService.ts(104,3): error TS1042: 'private' modifier cannot be used here.
+src/lib/services/storageService.ts(104,3): error TS1184: Modifiers cannot appear here.
+src/lib/utils/sanitation.ts(12,80): error TS2339: Property 'anchor' does not exist on type '{ green: string; amber: string; red: string; }'.
+src/lib/utils/sanitation.ts(12,80): error TS2339: Property 'at' does not exist on type '{ green: string; amber: string; red: string; }'.
+src/lib/utils/sanitation.ts(12,80): error TS2339: Property 'big' does not exist on type '{ green: string; amber: string; red: string; }'.
+src/lib/utils/sanitation.ts(12,80): error TS2339: Property 'blink' does not exist on type '{ green: string; amber: string; red: string; }'.
+src/lib/utils/sanitation.ts(12,80): error TS2339: Property 'bold' does not exist on type '{ green: string; amber: string; red: string; }'.
+src/lib/utils/sanitation.ts(12,80): error TS2339: Property 'charAt' does not exist on type '{ green: string; amber: string; red: string; }'.
+src/lib/utils/sanitation.ts(12,80): error TS2339: Property 'charCodeAt' does not exist on type '{ green: string; amber: string; red: string; }'.
+src/lib/utils/sanitation.ts(12,80): error TS2339: Property 'codePointAt' does not exist on type '{ green: string; amber: string; red: string; }'.
+src/lib/utils/sanitation.ts(12,80): error TS2339: Property 'concat' does not exist on type '{ green: string; amber: string; red: string; }'.
+src/lib/utils/sanitation.ts(12,80): error TS2339: Property 'endsWith' does not exist on type '{ green: string; amber: string; red: string; }'.
+src/lib/utils/sanitation.ts(12,80): error TS2339: Property 'fixed' does not exist on type '{ green: string; amber: string; red: string; }'.
+src/lib/utils/sanitation.ts(12,80): error TS2339: Property 'fontcolor' does not exist on type '{ green: string; amber: string; red: string; }'.
+src/lib/utils/sanitation.ts(12,80): error TS2339: Property 'fontsize' does not exist on type '{ green: string; amber: string; red: string; }'.
+src/lib/utils/sanitation.ts(12,80): error TS2339: Property 'includes' does not exist on type '{ green: string; amber: string; red: string; }'.
+src/lib/utils/sanitation.ts(12,80): error TS2339: Property 'indexOf' does not exist on type '{ green: string; amber: string; red: string; }'.
+src/lib/utils/sanitation.ts(12,80): error TS2339: Property 'isWellFormed' does not exist on type '{ green: string; amber: string; red: string; }'.
+src/lib/utils/sanitation.ts(12,80): error TS2339: Property 'italics' does not exist on type '{ green: string; amber: string; red: string; }'.
+src/lib/utils/sanitation.ts(12,80): error TS2339: Property 'lastIndexOf' does not exist on type '{ green: string; amber: string; red: string; }'.
+src/lib/utils/sanitation.ts(12,80): error TS2339: Property 'length' does not exist on type '{ green: string; amber: string; red: string; }'.
+src/lib/utils/sanitation.ts(12,80): error TS2339: Property 'link' does not exist on type '{ green: string; amber: string; red: string; }'.
+src/lib/utils/sanitation.ts(12,80): error TS2339: Property 'localeCompare' does not exist on type '{ green: string; amber: string; red: string; }'.
+src/lib/utils/sanitation.ts(12,80): error TS2339: Property 'match' does not exist on type '{ green: string; amber: string; red: string; }'.
+src/lib/utils/sanitation.ts(12,80): error TS2339: Property 'matchAll' does not exist on type '{ green: string; amber: string; red: string; }'.
+src/lib/utils/sanitation.ts(12,80): error TS2339: Property 'normalize' does not exist on type '{ green: string; amber: string; red: string; }'.
+src/lib/utils/sanitation.ts(12,80): error TS2339: Property 'padEnd' does not exist on type '{ green: string; amber: string; red: string; }'.
+src/lib/utils/sanitation.ts(12,80): error TS2339: Property 'padStart' does not exist on type '{ green: string; amber: string; red: string; }'.
+src/lib/utils/sanitation.ts(12,80): error TS2339: Property 'repeat' does not exist on type '{ green: string; amber: string; red: string; }'.
+src/lib/utils/sanitation.ts(12,80): error TS2339: Property 'replace' does not exist on type '{ green: string; amber: string; red: string; }'.
+src/lib/utils/sanitation.ts(12,80): error TS2339: Property 'replaceAll' does not exist on type '{ green: string; amber: string; red: string; }'.
+src/lib/utils/sanitation.ts(12,80): error TS2339: Property 'search' does not exist on type '{ green: string; amber: string; red: string; }'.
+src/lib/utils/sanitation.ts(12,80): error TS2339: Property 'slice' does not exist on type '{ green: string; amber: string; red: string; }'.
+src/lib/utils/sanitation.ts(12,80): error TS2339: Property 'small' does not exist on type '{ green: string; amber: string; red: string; }'.
+src/lib/utils/sanitation.ts(12,80): error TS2339: Property 'split' does not exist on type '{ green: string; amber: string; red: string; }'.
+src/lib/utils/sanitation.ts(12,80): error TS2339: Property 'startsWith' does not exist on type '{ green: string; amber: string; red: string; }'.
+src/lib/utils/sanitation.ts(12,80): error TS2339: Property 'strike' does not exist on type '{ green: string; amber: string; red: string; }'.
+src/lib/utils/sanitation.ts(12,80): error TS2339: Property 'sub' does not exist on type '{ green: string; amber: string; red: string; }'.
+src/lib/utils/sanitation.ts(12,80): error TS2339: Property 'substr' does not exist on type '{ green: string; amber: string; red: string; }'.
+src/lib/utils/sanitation.ts(12,80): error TS2339: Property 'substring' does not exist on type '{ green: string; amber: string; red: string; }'.
+src/lib/utils/sanitation.ts(12,80): error TS2339: Property 'sup' does not exist on type '{ green: string; amber: string; red: string; }'.
+src/lib/utils/sanitation.ts(12,80): error TS2339: Property 'toLocaleLowerCase' does not exist on type '{ green: string; amber: string; red: string; }'.
+src/lib/utils/sanitation.ts(12,80): error TS2339: Property 'toLocaleUpperCase' does not exist on type '{ green: string; amber: string; red: string; }'.
+src/lib/utils/sanitation.ts(12,80): error TS2339: Property 'toLowerCase' does not exist on type '{ green: string; amber: string; red: string; }'.
+src/lib/utils/sanitation.ts(12,80): error TS2339: Property 'toUpperCase' does not exist on type '{ green: string; amber: string; red: string; }'.
+src/lib/utils/sanitation.ts(12,80): error TS2339: Property 'toWellFormed' does not exist on type '{ green: string; amber: string; red: string; }'.
+src/lib/utils/sanitation.ts(12,80): error TS2339: Property 'trim' does not exist on type '{ green: string; amber: string; red: string; }'.
+src/lib/utils/sanitation.ts(12,80): error TS2339: Property 'trimEnd' does not exist on type '{ green: string; amber: string; red: string; }'.
+src/lib/utils/sanitation.ts(12,80): error TS2339: Property 'trimLeft' does not exist on type '{ green: string; amber: string; red: string; }'.
+src/lib/utils/sanitation.ts(12,80): error TS2339: Property 'trimRight' does not exist on type '{ green: string; amber: string; red: string; }'.
+src/lib/utils/sanitation.ts(12,80): error TS2339: Property 'trimStart' does not exist on type '{ green: string; amber: string; red: string; }'.
+src/lib/utils/sanitation.ts(12,80): error TS7053: Element implicitly has an 'any' type because expression of type 'number | unique symbol | "charAt" | "charCodeAt" | "concat" | "indexOf" | "lastIndexOf" | "localeCompare" | "match" | "replace" | "search" | "slice" | "split" | "substring" | ... 38 more ... | "valueOf"' can't be used to index type '{ green: string; amber: string; red: string; }'.
+  Property '[SymbolConstructor.iterator]' does not exist on type '{ green: string; amber: string; red: string; }'.
+src/lib/utils/sanitation.ts(32,78): error TS2339: Property 'anchor' does not exist on type '{ green: string; amber: string; red: string; }'.
+src/lib/utils/sanitation.ts(32,78): error TS2339: Property 'at' does not exist on type '{ green: string; amber: string; red: string; }'.
+src/lib/utils/sanitation.ts(32,78): error TS2339: Property 'big' does not exist on type '{ green: string; amber: string; red: string; }'.
+src/lib/utils/sanitation.ts(32,78): error TS2339: Property 'blink' does not exist on type '{ green: string; amber: string; red: string; }'.
+src/lib/utils/sanitation.ts(32,78): error TS2339: Property 'bold' does not exist on type '{ green: string; amber: string; red: string; }'.
+src/lib/utils/sanitation.ts(32,78): error TS2339: Property 'charAt' does not exist on type '{ green: string; amber: string; red: string; }'.
+src/lib/utils/sanitation.ts(32,78): error TS2339: Property 'charCodeAt' does not exist on type '{ green: string; amber: string; red: string; }'.
+src/lib/utils/sanitation.ts(32,78): error TS2339: Property 'codePointAt' does not exist on type '{ green: string; amber: string; red: string; }'.
+src/lib/utils/sanitation.ts(32,78): error TS2339: Property 'concat' does not exist on type '{ green: string; amber: string; red: string; }'.
+src/lib/utils/sanitation.ts(32,78): error TS2339: Property 'endsWith' does not exist on type '{ green: string; amber: string; red: string; }'.
+src/lib/utils/sanitation.ts(32,78): error TS2339: Property 'fixed' does not exist on type '{ green: string; amber: string; red: string; }'.
+src/lib/utils/sanitation.ts(32,78): error TS2339: Property 'fontcolor' does not exist on type '{ green: string; amber: string; red: string; }'.
+src/lib/utils/sanitation.ts(32,78): error TS2339: Property 'fontsize' does not exist on type '{ green: string; amber: string; red: string; }'.
+src/lib/utils/sanitation.ts(32,78): error TS2339: Property 'includes' does not exist on type '{ green: string; amber: string; red: string; }'.
+src/lib/utils/sanitation.ts(32,78): error TS2339: Property 'indexOf' does not exist on type '{ green: string; amber: string; red: string; }'.
+src/lib/utils/sanitation.ts(32,78): error TS2339: Property 'isWellFormed' does not exist on type '{ green: string; amber: string; red: string; }'.
+src/lib/utils/sanitation.ts(32,78): error TS2339: Property 'italics' does not exist on type '{ green: string; amber: string; red: string; }'.
+src/lib/utils/sanitation.ts(32,78): error TS2339: Property 'lastIndexOf' does not exist on type '{ green: string; amber: string; red: string; }'.
+src/lib/utils/sanitation.ts(32,78): error TS2339: Property 'length' does not exist on type '{ green: string; amber: string; red: string; }'.
+src/lib/utils/sanitation.ts(32,78): error TS2339: Property 'link' does not exist on type '{ green: string; amber: string; red: string; }'.
+src/lib/utils/sanitation.ts(32,78): error TS2339: Property 'localeCompare' does not exist on type '{ green: string; amber: string; red: string; }'.
+src/lib/utils/sanitation.ts(32,78): error TS2339: Property 'match' does not exist on type '{ green: string; amber: string; red: string; }'.
+src/lib/utils/sanitation.ts(32,78): error TS2339: Property 'matchAll' does not exist on type '{ green: string; amber: string; red: string; }'.
+src/lib/utils/sanitation.ts(32,78): error TS2339: Property 'normalize' does not exist on type '{ green: string; amber: string; red: string; }'.
+src/lib/utils/sanitation.ts(32,78): error TS2339: Property 'padEnd' does not exist on type '{ green: string; amber: string; red: string; }'.
+src/lib/utils/sanitation.ts(32,78): error TS2339: Property 'padStart' does not exist on type '{ green: string; amber: string; red: string; }'.
+src/lib/utils/sanitation.ts(32,78): error TS2339: Property 'repeat' does not exist on type '{ green: string; amber: string; red: string; }'.
+src/lib/utils/sanitation.ts(32,78): error TS2339: Property 'replace' does not exist on type '{ green: string; amber: string; red: string; }'.
+src/lib/utils/sanitation.ts(32,78): error TS2339: Property 'replaceAll' does not exist on type '{ green: string; amber: string; red: string; }'.
+src/lib/utils/sanitation.ts(32,78): error TS2339: Property 'search' does not exist on type '{ green: string; amber: string; red: string; }'.
+src/lib/utils/sanitation.ts(32,78): error TS2339: Property 'slice' does not exist on type '{ green: string; amber: string; red: string; }'.
+src/lib/utils/sanitation.ts(32,78): error TS2339: Property 'small' does not exist on type '{ green: string; amber: string; red: string; }'.
+src/lib/utils/sanitation.ts(32,78): error TS2339: Property 'split' does not exist on type '{ green: string; amber: string; red: string; }'.
+src/lib/utils/sanitation.ts(32,78): error TS2339: Property 'startsWith' does not exist on type '{ green: string; amber: string; red: string; }'.
+src/lib/utils/sanitation.ts(32,78): error TS2339: Property 'strike' does not exist on type '{ green: string; amber: string; red: string; }'.
+src/lib/utils/sanitation.ts(32,78): error TS2339: Property 'sub' does not exist on type '{ green: string; amber: string; red: string; }'.
+src/lib/utils/sanitation.ts(32,78): error TS2339: Property 'substr' does not exist on type '{ green: string; amber: string; red: string; }'.
+src/lib/utils/sanitation.ts(32,78): error TS2339: Property 'substring' does not exist on type '{ green: string; amber: string; red: string; }'.
+src/lib/utils/sanitation.ts(32,78): error TS2339: Property 'sup' does not exist on type '{ green: string; amber: string; red: string; }'.
+src/lib/utils/sanitation.ts(32,78): error TS2339: Property 'toLocaleLowerCase' does not exist on type '{ green: string; amber: string; red: string; }'.
+src/lib/utils/sanitation.ts(32,78): error TS2339: Property 'toLocaleUpperCase' does not exist on type '{ green: string; amber: string; red: string; }'.
+src/lib/utils/sanitation.ts(32,78): error TS2339: Property 'toLowerCase' does not exist on type '{ green: string; amber: string; red: string; }'.
+src/lib/utils/sanitation.ts(32,78): error TS2339: Property 'toUpperCase' does not exist on type '{ green: string; amber: string; red: string; }'.
+src/lib/utils/sanitation.ts(32,78): error TS2339: Property 'toWellFormed' does not exist on type '{ green: string; amber: string; red: string; }'.
+src/lib/utils/sanitation.ts(32,78): error TS2339: Property 'trim' does not exist on type '{ green: string; amber: string; red: string; }'.
+src/lib/utils/sanitation.ts(32,78): error TS2339: Property 'trimEnd' does not exist on type '{ green: string; amber: string; red: string; }'.
+src/lib/utils/sanitation.ts(32,78): error TS2339: Property 'trimLeft' does not exist on type '{ green: string; amber: string; red: string; }'.
+src/lib/utils/sanitation.ts(32,78): error TS2339: Property 'trimRight' does not exist on type '{ green: string; amber: string; red: string; }'.
+src/lib/utils/sanitation.ts(32,78): error TS2339: Property 'trimStart' does not exist on type '{ green: string; amber: string; red: string; }'.
+src/lib/utils/sanitation.ts(32,78): error TS7053: Element implicitly has an 'any' type because expression of type 'number | unique symbol | "charAt" | "charCodeAt" | "concat" | "indexOf" | "lastIndexOf" | "localeCompare" | "match" | "replace" | "search" | "slice" | "split" | "substring" | ... 38 more ... | "valueOf"' can't be used to index type '{ green: string; amber: string; red: string; }'.
+  Property '[SymbolConstructor.iterator]' does not exist on type '{ green: string; amber: string; red: string; }'.

@@ -161,3 +161,30 @@ export interface Escalation {
   slaDeadline: number;
   status: 'active' | 'resolved' | 'expired';
   notes: string;
+}
+
+export interface Report {
+  id: string;
+  title: string;
+  type: string;
+  generatedAt: number;
+}
+
+export interface PredictiveAlert {
+  id: string;
+  eventName: string;
+  predictedTonnageIncrease: number;
+  alertType: string;
+  recommendedAction: string;
+}
+
+export interface Post {
+  id: string;
+  authorName: string;
+  authorAvatar?: string | null;
+  createdAt: number;
+  content: string;
+  imageUrl?: string | null;
+  likesCount?: number;
+  commentsCount?: number;
+}

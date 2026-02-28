@@ -9,11 +9,12 @@ export const getKpiStatus = (value: number): 'green' | 'amber' | 'red' => {
 }
 
 // Get Tailwind color classes from KPI status
-export const getStatusColor = (status: 'green' | 'amber' | 'red' | string) => ({
+const STATUS_COLORS: Record<string, string> = {
   green: 'text-green-600 bg-green-50 border-green-200',
   amber: 'text-amber-600 bg-amber-50 border-amber-200',
   red: 'text-red-600 bg-red-50 border-red-200',
-}[status as keyof typeof status] ?? 'text-gray-600 bg-gray-50 border-gray-200')
+}
+export const getStatusColor = (status: 'green' | 'amber' | 'red' | string) => STATUS_COLORS[status] ?? 'text-gray-600 bg-gray-50 border-gray-200'
 
 export const getStatusText = (status: 'green' | 'amber' | 'red' | string) => {
   switch (status) {
@@ -29,12 +30,12 @@ export const getStatusText = (status: 'green' | 'amber' | 'red' | string) => {
 }
 
 // Get hex color from KPI status (for charts)
-export const getStatusHex = (status: 'green' | 'amber' | 'red' | string) => ({
+const STATUS_HEX: Record<string, string> = {
   green: '#16A34A',
   amber: '#D97706',
   red: '#DC2626',
-}[status as keyof typeof status] ?? '#6B7280')
-
+}
+export const getStatusHex = (status: 'green' | 'amber' | 'red' | string) => STATUS_HEX[status] ?? '#6B7280'
 // Compute overall status from 4 KPI values (worst one wins)
 export const computeOverallStatus = (
   segregation: number,

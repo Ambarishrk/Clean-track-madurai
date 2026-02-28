@@ -3,7 +3,7 @@ import {
   uploadBytesResumable,
   getDownloadURL,
   deleteObject,
-  Storage,
+  FirebaseStorage,
 } from 'firebase/storage'
 
 export const storageService = {
@@ -93,7 +93,7 @@ export const storageService = {
   /**
    * Delete a file from storage
    */
-  async deleteFile(storage: Storage, path: string) {
+  async deleteFile(storage: FirebaseStorage, path: string) {
     const fileRef = ref(storage, path)
     await deleteObject(fileRef)
   },
@@ -101,8 +101,8 @@ export const storageService = {
   /**
    * Internal: Upload file with progress tracking
    */
-  private async _uploadFile(
-    storage: Storage,
+  async _uploadFile(
+    storage: FirebaseStorage,
     path: string,
     file: File,
     onProgress?: (progress: number) => void
